@@ -19,6 +19,20 @@ typedef struct tree_t{
 }tree_t;
 
 /*
+WHATS LEFT TO BE DONE
+
+add the flags to true at the end of a word
+
+make the get word funciton
+
+
+
+*/
+
+
+
+
+/*
          d
        /   \
       a     o
@@ -35,9 +49,12 @@ typedef struct tree_t{
 void add_children(tree_t**node, char word[],int max_index, int index);
 void addNode(tree_t*parent_address, char new_letter, int is_word);
 void print_tree(tree_t* list);
+void print_list(tree_t* list);
 void freeList(tree_t** head);
-tree_t* create_node(char letter, tree_t *parent);
+tree_t* create_node(char letter, tree_t *parent, int is_word);
 void make_tree(char *filename, tree_t **root);
+void decalre_root(tree_t **root);
+void print_found_words(tree_t* list);
 int main(int argc, char* argv[]){
 
 
@@ -50,9 +67,33 @@ int main(int argc, char* argv[]){
   //declaring root
   tree_t *root = NULL;
   decalre_root(&root);
+  /*
+  printf("printing base tree\n");
+  print_tree(root);
+  printf("\n");
+  */
 
 
-  printf("%lu\n", strlen("ABC\0"));
+  make_tree(argv[1], &root);
+
+  /*
+  printf("printing tree\n");
+  print_tree(root);
+  printf("\n");
+  */
+
+  /*
+  printf("printing 'a' stuff\n");
+  print_list(root->children); printf("\n");
+  print_list(root->children->children); printf("\n");
+  print_list(root->children->children->children); printf("\n"); //printf("- "); print_list(root->children->children->next->children);
+  print_list(root->children->children->children->children); printf("\n");
+
+  */
+
+  print_found_words(root);
+
+
 
 
 
@@ -80,8 +121,8 @@ int main(int argc, char* argv[]){
 
 
 
-  print_tree(root);
-  printf("\n");
+  //print_tree(root);
+  //printf("\n");
   /*
   print_tree(root->children);
   printf("\n");
@@ -121,10 +162,12 @@ void make_tree(char *file_name, tree_t **root){
       input_length--;
     }
 
+    /*
     //makes the string lower case
     for(int i = 0; i < input_length; i++){
       temp_input[i] = tolower(temp_input[i]);
     }
+    */
 
     add_children( &(*root)->children, temp_input, input_length, 0);
   }
@@ -133,7 +176,7 @@ void make_tree(char *file_name, tree_t **root){
 //adds our first layer of children to root so the follwoing nodes have a base parent
 void decalre_root(tree_t **root){
 
-  *root = create_node(' ', NULL);
+  *root = create_node(' ', NULL, 0);
 
   char word[4];
   word[0] = ' '; //it's a space so we add to root
@@ -143,18 +186,18 @@ void decalre_root(tree_t **root){
   //makes a base tree of the alphabet
   for(int i = 'a'; i <= 'z'; i++){
     word[1] = i;
-    add_children(&(*root), word, word_size, 0 );
+    add_children(&(*root), word, word_size, 0);
   }
 }
 
 //allocates memory for a new node, fills it with given data, and sets everything else to NULL;
-tree_t* create_node(char letter, tree_t *parent){
+tree_t* create_node(char letter, tree_t *parent, int is_word){
   tree_t*new_child = (tree_t*)malloc(sizeof(tree_t));
   new_child->parent = parent;
   new_child->children = NULL;
   new_child->next = NULL;
   new_child->letter = letter;
-  new_child->is_word = 0;
+  new_child->is_word = is_word;
 
   return new_child;
 }
@@ -179,8 +222,8 @@ void add_children(tree_t**node, char word[],int max_index, int index){
   //IE with dog, i look for d, than add o to the d list.
   if((*node)->letter == word[index]){
     //IF we are adding the last letter now
-    if((index + 1 > max_index) || (word[index + 1] == '\0')){
-      addNode((*node), word[index + 1], 0);
+    if(index + 1 == max_index){
+      addNode((*node), word[index + 1], 1);
     }else{
       addNode((*node), word[index + 1], 0);
     }
@@ -197,7 +240,7 @@ void add_children(tree_t**node, char word[],int max_index, int index){
 //adds a letter to a linked list
 void addNode(tree_t*parent, char new_letter, int is_word){
   //create my node and load it with dat
-  tree_t*new_child = create_node(new_letter, parent);
+  tree_t*new_child = create_node(new_letter, parent, is_word);
 
   //adding our first child
   if(parent->children == NULL){
@@ -245,6 +288,40 @@ void print_tree(tree_t* list){
   print_tree(list->children);
 }
 
+void print_found_words(tree_t* list){
+  //base case: if there is no list, do nothing
+  if(list == NULL){
+    return;
+  }
+
+  //if we find a flag, we print the letter from parent to parent
+  if(list->is_word == 1){
+    tree_t* temp = list;
+    while(temp){
+      printf("%c", temp->letter);
+      temp = temp->parent;
+    }
+    printf("\n");
+  }
+
+  print_found_words(list->next);
+  print_found_words(list->children);
+
+}
+
+
+void print_list(tree_t* list){
+
+  //base case: if there is no list, do nothing
+  if(list == NULL){
+    return;
+  }
+  //visit
+  printf("%c ", list->letter);
+
+  //continues through the tree
+  print_list(list->next);
+}
 /* --------------------------- */
 //recursive way to free my entire tree!
 void freeList(tree_t** parent){
