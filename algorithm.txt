@@ -1,0 +1,45 @@
+
+
+FIRST DRAFT ALGORITHM:
+
+1. Make dictionary into tree
+  -limit word list to: no capitals, 3 <= word_length <= 16
+  -break the words into nodes of char's
+  -each node has a flag 'is_word'
+
+  /*
+           d            words: dad, day, dog, dock
+         /   \
+        a     o
+      /  \   / \
+     d   y  g   c
+                 \
+                  k
+  */
+
+
+2. create the board
+  -using a 2D array
+
+3. Modified DFS from each location on the board
+  - if(path->next_letter != dictionary_word){
+      fuck that word
+    }
+
+  -if(path->next_letter == word){
+    add word to our saved word list
+  }
+
+
+4. saved word list
+  -best 20 words we can find
+  -use heap priority queue to allow for 2log(n) when we find a word
+  -if( new_word->points > getmin(queue)->points ){
+    remove min than add new word
+  }
+
+
+
+POSSIBLE ADDITIONS:
+-stop the program once we find the first 20 words
+-only search for 3 letter word (bad because it is fast but gives us a low score)
