@@ -8,7 +8,7 @@
 typedef struct tree_t{
   //each node has a little that will form a word
   char letter;
-  //flag that all the letters make a word, F = false, T = true. char is 1/2 bites of an int
+  //flag that all the letters make a word, still use 0 and 1
   char is_word;
   //a single pointer to my parent node
   struct tree_t* parent;
@@ -21,7 +21,6 @@ typedef struct tree_t{
 /*
 WHATS LEFT TO BE DONE
 
-add the flags to true at the end of a word
 
 make the get word funciton
 
@@ -46,99 +45,90 @@ make the get word funciton
 //compare word can return a boolean, if it returns that a letter is not a child than we will not continue to triverse it's list
 
 
-void add_children(tree_t**node, char word[],int max_index, int index);
-void addNode(tree_t*parent_address, char new_letter, int is_word);
+
 void print_tree(tree_t* list);
 void print_list(tree_t* list);
-void freeList(tree_t** head);
+void print_found_words(tree_t* list);
+//FUNTIONS WE ACTUALLY USE
+void add_children(tree_t**node, char word[],int max_index, int index);
+void addNode(tree_t*parent_address, char new_letter, int is_word);
 tree_t* create_node(char letter, tree_t *parent, int is_word);
+int word_check(tree_t **root, char word[]);
+void freeList(tree_t** head);
 void make_tree(char *filename, tree_t **root);
 void decalre_root(tree_t **root);
-void print_found_words(tree_t* list);
 int main(int argc, char* argv[]){
-
-
-  //used for making fake input
-  char word[17];
-  short word_size = 0;
-  short word_index = 0;
-
 
   //declaring root
   tree_t *root = NULL;
   decalre_root(&root);
-  /*
-  printf("printing base tree\n");
-  print_tree(root);
-  printf("\n");
-  */
 
 
+  //scans in our dicitonary and adds all of the letters from words into our tree
   make_tree(argv[1], &root);
 
-  /*
-  printf("printing tree\n");
-  print_tree(root);
-  printf("\n");
-  */
 
-  /*
-  printf("printing 'a' stuff\n");
-  print_list(root->children); printf("\n");
-  print_list(root->children->children); printf("\n");
-  print_list(root->children->children->children); printf("\n"); //printf("- "); print_list(root->children->children->next->children);
-  print_list(root->children->children->children->children); printf("\n");
-
-  */
-
+  //recursivly goes through the list, every time we find a is_word flag to be true, we print char's starting from parent
   print_found_words(root);
-
-
-
-
-
-
-
-  /*
-
-  word[0] = 'A'; //adding to A's tree
-  word[1] = '@'; //adding the letter b
-  word[2] = '\0';
-  word_size = 2;
-
-  add_children(&(root->children), word, word_size, 0 ); //if we aren't adding to the origional list we must add to root's sub tree
-
-  word[0] = 'A';
-  word[1] = '@';
-  word[2] = '#';
-  word[3] = '\0';
-  word_size = 3;
-  add_children(&(root->children), word, word_size, 0);
-
-  */
-
-
-
-
-
-  //print_tree(root);
-  //printf("\n");
-  /*
-  print_tree(root->children);
   printf("\n");
-  print_tree(root->children->children);
-  printf("\n");
-  print_tree(root->children->children->children);
-  printf("\n");
-  */
 
+  if(word_check(&root, "eatability")){
+    printf("WOOOOO\n");
+  }else{
+    printf("word not found\n");
+  }
 
+  if(word_check(&root, "aut")){
+    printf("WOOOOO\n");
+  }else{
+    printf("word not found\n");
+  }
 
 
   freeList(&root);
   return 0;
 }
 
+int word_check(tree_t **root, char word[]){
+  short index = 0;
+  short max_index = strlen(word) - 1;
+
+  //if our word is not atleast 3 letters log we dont care about it
+  if(max_index < 2){
+    return 0;
+  }
+
+  tree_t *temp = (*root)->children;
+
+  while(index != max_index){
+
+    //scroll to the word in the list
+    while((temp != NULL) && (temp->letter != word[index])){
+      temp = temp->next;
+    }
+
+    //we did not find the letter after scrolling and looking
+    if((temp == NULL) || (temp->letter != word[index])){
+      return 0;
+    }
+
+    //we found the letter
+    else{
+      temp = temp->children;
+    }
+
+    index++;
+  }
+
+  //we are have made it down the list until the last letter, now we check if it's a word
+  if(temp->letter == word[index]){
+    //printf("%c %c\n",word[index], temp->letter);
+    return temp->is_word;
+  }
+
+
+  return 0;
+}
 
 
 
@@ -149,7 +139,7 @@ void make_tree(char *file_name, tree_t **root){
 
   //used for scanning and tokenizing
   char temp_input[20];
-  int input_length;
+  short input_length;
   char *token;
 
 
@@ -161,13 +151,6 @@ void make_tree(char *file_name, tree_t **root){
       temp_input[input_length] = '\0';
       input_length--;
     }
-
-    /*
-    //makes the string lower case
-    for(int i = 0; i < input_length; i++){
-      temp_input[i] = tolower(temp_input[i]);
-    }
-    */
 
     add_children( &(*root)->children, temp_input, input_length, 0);
   }
@@ -181,7 +164,7 @@ void decalre_root(tree_t **root){
   char word[4];
   word[0] = ' '; //it's a space so we add to root
   word[2] = '\0';
-  int word_size = 2;
+  short word_size = 2;
 
   //makes a base tree of the alphabet
   for(int i = 'a'; i <= 'z'; i++){
