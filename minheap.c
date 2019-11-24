@@ -8,13 +8,15 @@
 #define MAX_SIZE 20
 
 typedef struct word{
-    char word[17];
+    char word[18];
     int length;
+    int path[16][2]; 
 
 }NODE;
 
 
 typedef struct index{
+
     NODE wordHeap[MAX_SIZE];
     int position; // The position where you have to insert the next word 
 }HEAP;
@@ -23,7 +25,7 @@ typedef struct index{
 
 
 bool isFull(HEAP);
-void insertWord(char [], HEAP *);
+void insertWord(link_word *, HEAP *);
 NODE createNode(char *);
 void upHeap(int, HEAP *);
 void downHeap(HEAP *);
@@ -34,6 +36,8 @@ void upHeap(int, HEAP*);
 int getLength(int, HEAP);
 void swapMin(char [], HEAP *);
 void swap(int, int, HEAP *);
+int getLength (link_word *);
+char* getString(int,link_word *);
 
 
 
@@ -50,7 +54,17 @@ int main (void){
     insertWord("1",&minHeap);
     insertWord("12",&minHeap);
     insertWord("123",&minHeap);
+    insertWord("1234",&minHeap);
+    insertWord("12345",&minHeap);
+    insertWord("1",&minHeap);
+    insertWord("12",&minHeap);
+    insertWord("123",&minHeap);
      insertWord("1234",&minHeap);
+    insertWord("12345",&minHeap);
+    insertWord("1",&minHeap);
+    insertWord("12",&minHeap);
+    insertWord("123",&minHeap);
+    insertWord("1234",&minHeap);
     insertWord("12345",&minHeap);
     insertWord("1",&minHeap);
     insertWord("12",&minHeap);
@@ -68,46 +82,7 @@ int main (void){
      insertWord("1234",&minHeap);
     insertWord("12345",&minHeap);
     insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("1",&minHeap);
-    insertWord("12",&minHeap);
-    insertWord("123",&minHeap);
-     insertWord("1234",&minHeap);
-    insertWord("12345",&minHeap);
-    insertWord("123456789ABCDEF",&minHeap);
+  
    
     
     
@@ -131,19 +106,47 @@ bool isFull(HEAP minHeap){
     }
 }
 
-void insertWord(char word[], HEAP *minHeap){
+void insertWord(link_word *head , HEAP **minHeap){
+
+    int size = getLength(head);
+    char word[size] = getString(size, head);
 
     if(isFull(*minHeap)==false){
-        int index = minHeap->position;
-        minHeap->wordHeap[index] = createNode(word);
-        minHeap->position = index +1;
-        upHeap(index, minHeap);
+        int index = (*minHeap)->position;
+        *minHeap->wordHeap[index] = createNode(word);
+        *minHeap->position = index +1;
+        upHeap(index, *minHeap);
     }
     else{
-        swapMin(word,minHeap);
+        swapMin(word, *minHeap);
     }
      
 }
+
+
+int getLength (link_word *head){
+    int length = 0;
+    while(temp != NULL){
+        temp = temp->next;
+        length++;
+    }
+
+    return length;
+}
+
+
+char* getString(int length, link_word *head){
+
+    link_word *temp = *head;
+    for(int i = length -1; i>=0; i--){
+        word[i] = temp->letter;
+        temp = temp->next;
+
+    }
+
+    return word;
+
+    
 
 NODE createNode(char word[]){
     NODE entry;
