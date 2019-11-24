@@ -19,4 +19,6 @@ void initBogglePlayer(char* word_file);
 
 WordList* getWords(char board[4][4]);
 
+
+
 #endif

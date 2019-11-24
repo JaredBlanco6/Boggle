@@ -58,7 +58,11 @@ void setWordListLength(WordList *wordlist, int len);
 Word* getWordFromWordList(WordList *wordlist, int index);
 
 // get a new empty word list
-WordList* getNewWordList();                    
+WordList* getNewWordList();
+
+
+
+
 
 
 #endif

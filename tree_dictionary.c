@@ -70,7 +70,7 @@ int main(int argc, char* argv[]){
   print_list(root->children); printf("\n");
   print_list(root->children->children); printf("\n");
 
-  tree_t *temp = root->children->children->children;
+  //tree_t *temp = root->children->children->children;
   //print_list(root->children->children->children); printf("\n");
 
   /*
@@ -97,7 +97,7 @@ int main(int argc, char* argv[]){
   }else{
     printf("stuffword not found\n");
   }
-  /*
+
   tree_t *temp = (root)->children;
 
   while(temp->letter != 'H'){
@@ -115,12 +115,13 @@ int main(int argc, char* argv[]){
   while(temp->letter != 'L'){
     temp = temp->next;
   }
+  temp = temp->children;
   while(temp){
     printf("%c with flag %d\n", temp->letter, temp->is_word);
     temp = temp->next;
   }
 
-  */
+
 
   freeList(&root);
   return 0;
