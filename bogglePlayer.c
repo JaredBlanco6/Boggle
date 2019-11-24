@@ -192,7 +192,7 @@ void initBogglePlayer(char* word_file) {
 
 
   //scans in our dicitonary and adds all of the letters from words into our tree
-  make_tree(word_file, &dictionary_tree);
+  make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
 
 
   //free's our tree
