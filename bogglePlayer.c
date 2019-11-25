@@ -593,7 +593,7 @@ void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *l
 // initialize BogglePlayer with a file of English words
 void initBogglePlayer(char* word_file) {
   //declaring root to dictionary tree
-  tree_t *dictionary_tree = NULL;
+  static tree_t *dictionary_tree = NULL;
   //fills first layer of letter
   decalre_root(&dictionary_tree);
 
