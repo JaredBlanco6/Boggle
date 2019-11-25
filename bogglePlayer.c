@@ -256,6 +256,7 @@ NODE createNode(char word[]){
     NODE entry;
     strcpy(entry.word, word);
     entry.length = strlen(word);
+
     return entry;
 }
 
@@ -273,9 +274,11 @@ int getSize(link_word *head){
 
 //Creates a string by attaching the characters of the linked list 
 void getString(char word[], int length, link_word *head){
+
     link_word *temp = head;
     for(int i = length -1; i>=0; i--){
         word[i] = temp->letter;
+        
         temp = temp->next;
 
     }
@@ -283,44 +286,57 @@ void getString(char word[], int length, link_word *head){
 
 }
 
-//
+//this function is called in the DFS everytime we found a valid word
 void insertWord(link_word *head , HEAP *minHeap){
-  
+    //Calls getSize and it assigns it to the size of the word
     int size = getSize(head);
     char word[size];
+    //calls the function to get the word from the linked list
     getString(word, size, head);
-
+    // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
         int index = (minHeap)->position;
         (minHeap)->wordHeap[index] = createNode(word);
         (minHeap)->position = index +1;
         upHeap(index, (minHeap));
     }
-    else{
+    else if(size > minHeap->wordHeap[0].length){
+
         swapMin(word, minHeap);
+
+    }
+    else{
+
+      return;
+
     }
 
 }
 
-
-
+//
 void upHeap(int index, HEAP *minHeap){
+    //Calls upheap after inserting the node in the right position
+    //It is only called when the heap is not full
     int parent = getParent(index);
+    //swap if the parent's word length is greater than itself
     while(index>0 && getLength(parent, *minHeap)>getLength(index,*minHeap)){
+        //Calls the swap function which swaps the information at the two indexes
         swap(index,parent,minHeap);
+        //after the swap it sets the index to the parent
         index = parent;
+        //calls the functino get parent to get the new parent
         parent = getParent(index);
     }
 
 }
 
-
 void downHeap(HEAP *minHeap){
     //downHeap will only be called when the array is full. The insertion is always at the root.
     int index = 0;
     int size = minHeap->position;
-
+    //As long as the children is bigger than the parent and the index is lower than the maximum size of the heap  
     while(index<size && leftChildren(index)<size){
+
         if(getLength(index,*minHeap)>getLength(leftChildren(index),*minHeap)){
             swap(index,leftChildren(index), minHeap);
             index = leftChildren(index);
@@ -340,11 +356,12 @@ void downHeap(HEAP *minHeap){
 
 }
 
-
+//This function is called when the heap is full
+//It swaps the shortes word in the heap with the new minimum word which will hold a bigger length than the previous Min
 void swapMin(char word[], HEAP *minHeap){
-
+    //It swaps the new shortes word with the word that was initially at the root 
     minHeap->wordHeap[0] = createNode(word);
-    downHeap(minHeap);
+    downHeap(minHeap);//Calls down heap to check for the right position of the new inserted word.
 
 }
 
@@ -360,13 +377,14 @@ int leftChildren(int parentIndex){//get left child index
 
 
 int rightChildren(int parentIndex){//get right child index. return function
-  return 2 * parentIndex + 2;
+  return 2 * parentIndex + 2; 
 }
 
 
 int getLength(int index, HEAP minHeap){
-    int length = minHeap.wordHeap[index].length;
-    return length;
+
+    int length = minHeap.wordHeap[index].length;//It stores the length of the word in the heap at the right index 
+    return length;//returns the length of the word 
 }
 
 
