@@ -25,7 +25,7 @@
 typedef struct NODE{
     char word[18];
     int length;
-    int path[16][2]; //WE ARE CHANGING THE FUCK OUT OF THIS SIZE! EIITHER A LL OR MALLOC
+    int path[16][2]; 
 
 }NODE;
 
@@ -49,6 +49,21 @@ typedef struct link_word{
   struct link_word* next;
 }link_word;
 
+
+bool isFull(HEAP);
+void insertWord(link_word *, HEAP *);
+NODE createNode(char *);
+void upHeap(int, HEAP *);
+void downHeap(HEAP *);
+int getParent(int );
+int leftChildren(int);
+int rightChildren(int);
+void upHeap(int, HEAP*);
+int getLength(int, HEAP);
+void swapMin(char [], HEAP *);
+int getSize(link_word *);
+void swap(int, int, HEAP *);
+void getString(char [], int,link_word *);
 //structs for tree
 typedef struct tree_t{
   //each node has a little that will form a word
@@ -223,22 +238,31 @@ void freeList(tree_t** parent){
 /* ----- ALL HEAP FUNCTIONS ----- */
 /* ------------------------------ */
 
-/*
-
+//Checks if the Heap is full
 bool isFull(HEAP minHeap){
-
+    //if the next position equals the maximum size of the heap return True for full 
     if(minHeap.position == MAX_SIZE){
         return true;
     }
+    //otherwise the heap is not full so return false
     else{
         return false;
     }
 }
 
 
-int getLength (link_word *head){ //MAYBE FIXING AN ERROR!! temp was undeclared so i declared it to head
+//Creates a node of type NODE and returns it 
+NODE createNode(char word[]){
+    NODE entry;
+    strcpy(entry.word, word);
+    entry.length = strlen(word);
+    return entry;
+}
+
+//Returns the size of the word by looping through the linked list
+int getSize(link_word *head){
+  link_word *temp = head;
     int length = 0;
-    link_word *temp = head; //RIGHT HERE
     while(temp != NULL){
         temp = temp->next;
         length++;
@@ -247,47 +271,33 @@ int getLength (link_word *head){ //MAYBE FIXING AN ERROR!! temp was undeclared s
     return length;
 }
 
+//Creates a string by attaching the characters of the linked list 
+void getString(char word[], int length, link_word *head){
+    link_word *temp = head;
+    for(int i = length -1; i>=0; i--){
+        word[i] = temp->letter;
+        temp = temp->next;
 
-NODE createNode(char word[]){
-    NODE entry;
-    strcpy(entry.word, word);
-    entry.length = strlen(word);
-    return entry;
+    }
+    word[length] = '\0';
+
 }
 
-
-//ERROR, WORD WAS UNDECALRED
-//please leave a comment for where this is used
-char* getString(int length, link_word *head){
-
-  char word[length + 1];
-  link_word *temp = head;
-  for(int i = length -1; i>=0; i--){
-      word[i] = temp->letter;
-      temp = temp->next;
-
-  }
-  //adding the null char of the string to the end
-  word[length] = '\0';
-
-  return word;
-}
-
-
-
-void insertWord(link_word *head , HEAP **minHeap){
-
-    int size = getLength(head);
-    char word[size] = getString(size, head);
+//
+void insertWord(link_word *head , HEAP *minHeap){
+  
+    int size = getSize(head);
+    char word[size];
+    getString(word, size, head);
 
     if(isFull(*minHeap)==false){
-        int index = (*minHeap)->position;
-        (*minHeap)->wordHeap[index] = createNode(word);
-        (*minHeap)->position = index +1;
-        upHeap(index, (*minHeap));
+        int index = (minHeap)->position;
+        (minHeap)->wordHeap[index] = createNode(word);
+        (minHeap)->position = index +1;
+        upHeap(index, (minHeap));
     }
     else{
-        swapMin(word, (*minHeap));
+        swapMin(word, minHeap);
     }
 
 }
@@ -369,7 +379,6 @@ void swap(int index1, int index2, HEAP *minHeap){
 
 }
 
-*/
 
 /* ------------------------------ */
 /* ----- ALL DFS FUNCTIONS ----- */
