@@ -223,7 +223,7 @@ void freeList(tree_t** parent){
 /* ----- ALL HEAP FUNCTIONS ----- */
 /* ------------------------------ */
 
-
+/*
 
 bool isFull(HEAP minHeap){
 
@@ -257,15 +257,18 @@ NODE createNode(char word[]){
 
 
 //ERROR, WORD WAS UNDECALRED
+//please leave a comment for where this is used
 char* getString(int length, link_word *head){
 
-  char word[16];
+  char word[length + 1];
   link_word *temp = head;
   for(int i = length -1; i>=0; i--){
       word[i] = temp->letter;
       temp = temp->next;
 
   }
+  //adding the null char of the string to the end
+  word[length] = '\0';
 
   return word;
 }
@@ -279,12 +282,12 @@ void insertWord(link_word *head , HEAP **minHeap){
 
     if(isFull(*minHeap)==false){
         int index = (*minHeap)->position;
-        *minHeap->wordHeap[index] = createNode(word);
-        *minHeap->position = index +1;
-        upHeap(index, *minHeap);
+        (*minHeap)->wordHeap[index] = createNode(word);
+        (*minHeap)->position = index +1;
+        upHeap(index, (*minHeap));
     }
     else{
-        swapMin(word, *minHeap);
+        swapMin(word, (*minHeap));
     }
 
 }
