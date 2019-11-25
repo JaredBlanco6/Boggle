@@ -296,17 +296,21 @@ void insertWord(link_word *head , HEAP *minHeap){
     // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
         int index = (minHeap)->position;
+        //the new word is inserted in the heap in the correct position
         (minHeap)->wordHeap[index] = createNode(word);
+        //the new position is updated by addidng one value 
         (minHeap)->position = index +1;
+        //After the new word is inserted upHeap function is called to sort the heap 
         upHeap(index, (minHeap));
     }
+    //if the heap is full it checks if current word is larger than the root
     else if(size > minHeap->wordHeap[0].length){
-
+        //If true then swap with the root
         swapMin(word, minHeap);
 
     }
     else{
-
+      //If the size of the current word is smaller than the root then the word should not be inserted in the heap 
       return;
 
     }
@@ -336,12 +340,16 @@ void downHeap(HEAP *minHeap){
     int size = minHeap->position;
     //As long as the children is bigger than the parent and the index is lower than the maximum size of the heap  
     while(index<size && leftChildren(index)<size){
-
+        //if the length of the left child is smaller than the length of the inserted word then swap nodes
         if(getLength(index,*minHeap)>getLength(leftChildren(index),*minHeap)){
+            //swaps with the left children
             swap(index,leftChildren(index), minHeap);
+            //sets the new index to the swapped node
             index = leftChildren(index);
         }
+        //if the length of the right child is smaller than the length of the inserted word then swap nodes 
         else if (getLength(index, *minHeap)>getLength(rightChildren(index),*minHeap)){
+            //if the conditions is true then it swaps with th right child 
             swap(index,rightChildren(index), minHeap);
             index = rightChildren(index);
         }
