@@ -236,6 +236,7 @@ bool isFull(HEAP minHeap){
 }
 
 
+
 int getLength (link_word *head){ //MAYBE FIXING AN ERROR!! temp was undeclared so i declared it to head
     int length = 0;
     link_word *temp = head; //RIGHT HERE
