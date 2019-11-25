@@ -11,7 +11,6 @@
 
 
 */
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -21,7 +20,38 @@
 
 #define MAX_SIZE 10
 
+#ifndef WORD_H
+#define WORD_H
+
+#define MAX_WORD_LEN 16      // 4x4 board, at most 16 letters
+#define MAX_WORDLIST_LEN 20  // maximum 20 words
+
+// location of a letter
+typedef struct location {
+  int    row;                      // 0 to 3
+  int    column;                   // 0 to 3
+} Location;
+
+// word has the string and path
+typedef struct word {
+  char     word[MAX_WORD_LEN + 1];  // terminated with '\0'
+  Location path[MAX_WORD_LEN];      // path of the letters in the word
+  int      path_length;             // actual number of letters/locations in the path
+} Word;
+
+// a list of words
+typedef struct wordList {
+  Word     wordlist[MAX_WORDLIST_LEN];   // at most 20 words
+  int      length;                       // actual number of words
+} WordList;
+
+
+
+
 //used in the heap
+
+
+
 typedef struct NODE{
     char word[18];
     int length;
@@ -33,6 +63,7 @@ typedef struct NODE{
 typedef struct index{
 
     NODE wordHeap[MAX_SIZE];
+
     int position; // The position where you have to insert the next word
 }HEAP;
 
@@ -52,7 +83,7 @@ typedef struct link_word{
 
 bool isFull(HEAP);
 void insertWord(link_word *, HEAP *);
-NODE createNode(char *, link_word *);
+Word createNode(char *, link_word *);
 void upHeap(int, HEAP *);
 void downHeap(HEAP *);
 int getParent(int );
@@ -252,15 +283,15 @@ bool isFull(HEAP minHeap){
 
 
 //Creates a node of type NODE and returns it 
-NODE createNode(char word[], link_word *head){
+Word createNode(char word[], link_word *head){
     NODE entry;
     strcpy(entry.word, word);
-    entry.length = strlen(word);
+    entry.path_length = strlen(word);
     link_word *temp = head;
-      
+
       for(int i =0;i<16;i++){
           if(temp !=NULL){
-          entry.path[i][0] = temp->x;
+          entry.path[ = temp->x;
           entry.path[i][1]= temp->y;
           temp = temp->next;
           }
@@ -610,7 +641,7 @@ void initBogglePlayer(char* word_file) {
 
 
 
-void      sampleWordList(WordList* myWords);   // a sample function to populate a word list
+void  sampleWordList(WordList* myWords);   // a sample function to populate a word list
 
 // based on the board, find valid words
 //
