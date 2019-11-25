@@ -55,7 +55,7 @@ typedef struct wordList {
 typedef struct NODE{
     char word[18];
     int length;
-    int path[16][2]; 
+    int path[16][2];
 
 }NODE;
 
@@ -271,7 +271,7 @@ void freeList(tree_t** parent){
 
 //Checks if the Heap is full
 bool isFull(HEAP minHeap){
-    //if the next position equals the maximum size of the heap return True for full 
+    //if the next position equals the maximum size of the heap return True for full
     if(minHeap.position == MAX_SIZE){
         return true;
     }
@@ -299,8 +299,8 @@ Word createNode(char word[], link_word *head){
             break;
           }
         }
-        
-      
+
+
 
     return entry;
 }
@@ -317,13 +317,13 @@ int getSize(link_word *head){
     return length;
 }
 
-//Creates a string by attaching the characters of the linked list 
+//Creates a string by attaching the characters of the linked list
 void getString(char word[], int length, link_word *head){
 
     link_word *temp = head;
     for(int i = length -1; i>=0; i--){
         word[i] = temp->letter;
-        
+
         temp = temp->next;
 
     }
@@ -343,9 +343,9 @@ void insertWord(link_word *head , HEAP *minHeap){
         int index = (minHeap)->position;
         //the new word is inserted in the heap in the correct position
         (minHeap)->wordHeap[index] = createNode(word, head);
-        //the new position is updated by addidng one value 
+        //the new position is updated by addidng one value
         (minHeap)->position = index +1;
-        //After the new word is inserted upHeap function is called to sort the heap 
+        //After the new word is inserted upHeap function is called to sort the heap
         upHeap(index, (minHeap));
     }
     //if the heap is full it checks if current word is larger than the root
@@ -355,7 +355,7 @@ void insertWord(link_word *head , HEAP *minHeap){
 
     }
     else{
-      //If the size of the current word is smaller than the root then the word should not be inserted in the heap 
+      //If the size of the current word is smaller than the root then the word should not be inserted in the heap
       return;
 
     }
@@ -383,7 +383,7 @@ void downHeap(HEAP *minHeap){
     //downHeap will only be called when the array is full. The insertion is always at the root.
     int index = 0;
     int size = minHeap->position;
-    //As long as the children is bigger than the parent and the index is lower than the maximum size of the heap  
+    //As long as the children is bigger than the parent and the index is lower than the maximum size of the heap
     while(index<size && leftChildren(index)<size){
         //if the length of the left child is smaller than the length of the inserted word then swap nodes
         if(getLength(index,*minHeap)>getLength(leftChildren(index),*minHeap)){
@@ -392,9 +392,9 @@ void downHeap(HEAP *minHeap){
             //sets the new index to the swapped node
             index = leftChildren(index);
         }
-        //if the length of the right child is smaller than the length of the inserted word then swap nodes 
+        //if the length of the right child is smaller than the length of the inserted word then swap nodes
         else if (getLength(index, *minHeap)>getLength(rightChildren(index),*minHeap)){
-            //if the conditions is true then it swaps with th right child 
+            //if the conditions is true then it swaps with th right child
             swap(index,rightChildren(index), minHeap);
             index = rightChildren(index);
         }
@@ -412,7 +412,7 @@ void downHeap(HEAP *minHeap){
 //This function is called when the heap is full
 //It swaps the shortes word in the heap with the new minimum word which will hold a bigger length than the previous Min
 void swapMin(char word[], HEAP *minHeap, link_word *head){
-    //It swaps the new shortes word with the word that was initially at the root 
+    //It swaps the new shortes word with the word that was initially at the root
     minHeap->wordHeap[0] = createNode(word,head);
     downHeap(minHeap);//Calls down heap to check for the right position of the new inserted word.
 
@@ -430,14 +430,14 @@ int leftChildren(int parentIndex){//get left child index
 
 
 int rightChildren(int parentIndex){//get right child index. return function
-  return 2 * parentIndex + 2; 
+  return 2 * parentIndex + 2;
 }
 
 
 int getLength(int index, HEAP minHeap){
 
-    int length = minHeap.wordHeap[index].length;//It stores the length of the word in the heap at the right index 
-    return length;//returns the length of the word 
+    int length = minHeap.wordHeap[index].length;//It stores the length of the word in the heap at the right index
+    return length;//returns the length of the word
 }
 
 
@@ -624,7 +624,7 @@ void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *l
 // initialize BogglePlayer with a file of English words
 void initBogglePlayer(char* word_file) {
   //declaring root to dictionary tree
-  tree_t *dictionary_tree = NULL;
+  static tree_t *dictionary_tree = NULL;
   //fills first layer of letter
   decalre_root(&dictionary_tree);
 
