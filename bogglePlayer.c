@@ -52,7 +52,7 @@ typedef struct link_word{
 
 bool isFull(HEAP);
 void insertWord(link_word *, HEAP *);
-NODE createNode(char *);
+NODE createNode(char *, link_word *);
 void upHeap(int, HEAP *);
 void downHeap(HEAP *);
 int getParent(int );
@@ -60,7 +60,7 @@ int leftChildren(int);
 int rightChildren(int);
 void upHeap(int, HEAP*);
 int getLength(int, HEAP);
-void swapMin(char [], HEAP *);
+void swapMin(char [], HEAP *, link_word *);
 int getSize(link_word *);
 void swap(int, int, HEAP *);
 void getString(char [], int,link_word *);
@@ -252,10 +252,24 @@ bool isFull(HEAP minHeap){
 
 
 //Creates a node of type NODE and returns it 
-NODE createNode(char word[]){
+NODE createNode(char word[], link_word *head){
     NODE entry;
     strcpy(entry.word, word);
     entry.length = strlen(word);
+    link_word *temp = head;
+      
+      for(int i =0;i<16;i++){
+          if(temp !=NULL){
+          entry.path[i][0] = temp->x;
+          entry.path[i][1]= temp->y;
+          temp = temp->next;
+          }
+          else{
+            break;
+          }
+        }
+        
+      
 
     return entry;
 }
@@ -297,7 +311,7 @@ void insertWord(link_word *head , HEAP *minHeap){
     if(isFull(*minHeap)==false){
         int index = (minHeap)->position;
         //the new word is inserted in the heap in the correct position
-        (minHeap)->wordHeap[index] = createNode(word);
+        (minHeap)->wordHeap[index] = createNode(word, head);
         //the new position is updated by addidng one value 
         (minHeap)->position = index +1;
         //After the new word is inserted upHeap function is called to sort the heap 
@@ -306,7 +320,7 @@ void insertWord(link_word *head , HEAP *minHeap){
     //if the heap is full it checks if current word is larger than the root
     else if(size > minHeap->wordHeap[0].length){
         //If true then swap with the root
-        swapMin(word, minHeap);
+        swapMin(word, minHeap,head);
 
     }
     else{
@@ -366,9 +380,9 @@ void downHeap(HEAP *minHeap){
 
 //This function is called when the heap is full
 //It swaps the shortes word in the heap with the new minimum word which will hold a bigger length than the previous Min
-void swapMin(char word[], HEAP *minHeap){
+void swapMin(char word[], HEAP *minHeap, link_word *head){
     //It swaps the new shortes word with the word that was initially at the root 
-    minHeap->wordHeap[0] = createNode(word);
+    minHeap->wordHeap[0] = createNode(word,head);
     downHeap(minHeap);//Calls down heap to check for the right position of the new inserted word.
 
 }
