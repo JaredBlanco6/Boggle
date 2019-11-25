@@ -19,22 +19,25 @@
 #include "bogglePlayer.h"
 #include "word.h"
 
-typedef struct word{
+#define MAX_SIZE 10
+
+//used in the heap
+typedef struct NODE{
     char word[18];
     int length;
     int path[16][2]; //WE ARE CHANGING THE FUCK OUT OF THIS SIZE! EIITHER A LL OR MALLOC
 
 }NODE;
 
-
+//holds the heap info
 typedef struct index{
 
     NODE wordHeap[MAX_SIZE];
-    int position; // The position where you have to insert the next word 
+    int position; // The position where you have to insert the next word
 }HEAP;
 
-//assumption of  mod MAP structure
-typedef struct map{ 
+//used map structue in our DFS
+typedef struct map{
   bool visited;
   char value;
 }MAP;
@@ -44,10 +47,9 @@ typedef struct link_word{
   short x,y;
   char letter;
   struct link_word* next;
-}Link_word;
+}link_word;
 
-
-/* ----- ALL TREE FUNCTIONS ----- */
+//structs for tree
 typedef struct tree_t{
   //each node has a little that will form a word
   char letter;
@@ -61,6 +63,11 @@ typedef struct tree_t{
   struct tree_t* next;
 }tree_t;
 
+
+/* ------------------------------ */
+/* ----- ALL TREE FUNCTIONS ----- */
+/* ------------------------------ */
+
 //allocates memory for a new node, fills it with given data, and sets everything else to NULL;
 tree_t* create_node(char letter, tree_t *parent, int is_word){
   tree_t*new_child = (tree_t*)malloc(sizeof(tree_t));
@@ -73,6 +80,7 @@ tree_t* create_node(char letter, tree_t *parent, int is_word){
   return new_child;
 }
 
+/* ------------------------------- */
 //adds a letter to a linked list
 void addNode(tree_t*parent, char new_letter, int is_word){
   //create my node and load it with dat
@@ -118,6 +126,7 @@ void addNode(tree_t*parent, char new_letter, int is_word){
   current_node->next = new_child;
 }
 
+/* ------------------------------ */
 //looks for a parent and gives them their kid.
 //the parent is the first letter, the child is the second letter
 void add_children(tree_t**node, char word[],int max_index, int index){
@@ -149,6 +158,7 @@ void add_children(tree_t**node, char word[],int max_index, int index){
   }
 }
 
+/* ------------------------------ */
 //scans in our dictionary and adds all of the individual chars to our tree
 void make_tree(char *file_name, tree_t **root){
   //opens the file
@@ -173,6 +183,7 @@ void make_tree(char *file_name, tree_t **root){
   }
 }
 
+/* ------------------------------ */
 //adds our first layer of children to root so the follwoing nodes have a base parent
 void decalre_root(tree_t **root){
 
@@ -190,7 +201,7 @@ void decalre_root(tree_t **root){
   }
 }
 
-
+/* ------------------------------ */
 //recursive way to free my entire tree!
 void freeList(tree_t** parent){
   //base case: if we have no list, don't do anything
@@ -209,6 +220,11 @@ void freeList(tree_t** parent){
 }
 
 /* ------------------------------ */
+/* ----- ALL HEAP FUNCTIONS ----- */
+/* ------------------------------ */
+
+
+
 bool isFull(HEAP minHeap){
 
     if(minHeap.position == MAX_SIZE){
@@ -218,6 +234,43 @@ bool isFull(HEAP minHeap){
         return false;
     }
 }
+
+
+int getLength (link_word *head){ //MAYBE FIXING AN ERROR!! temp was undeclared so i declared it to head
+    int length = 0;
+    link_word *temp = head; //RIGHT HERE
+    while(temp != NULL){
+        temp = temp->next;
+        length++;
+    }
+
+    return length;
+}
+
+
+NODE createNode(char word[]){
+    NODE entry;
+    strcpy(entry.word, word);
+    entry.length = strlen(word);
+    return entry;
+}
+
+
+//ERROR, WORD WAS UNDECALRED
+char* getString(int length, link_word *head){
+
+  char word[16];
+  link_word *temp = head;
+  for(int i = length -1; i>=0; i--){
+      word[i] = temp->letter;
+      temp = temp->next;
+
+  }
+
+  return word;
+}
+
+
 
 void insertWord(link_word *head , HEAP **minHeap){
 
@@ -233,51 +286,21 @@ void insertWord(link_word *head , HEAP **minHeap){
     else{
         swapMin(word, *minHeap);
     }
-     
+
 }
 
 
-int getLength (link_word *head){
-    int length = 0;
-    while(temp != NULL){
-        temp = temp->next;
-        length++;
-    }
-
-    return length;
-}
-
-
-char* getString(int length, link_word *head){
-
-    link_word *temp = *head;
-    for(int i = length -1; i>=0; i--){
-        word[i] = temp->letter;
-        temp = temp->next;
-
-    }
-
-    return word;
-  }
-
-    
-
-NODE createNode(char word[]){
-    NODE entry;
-    strcpy(entry.word, word);
-    entry.length = strlen(word);
-    return entry;
-}
 
 void upHeap(int index, HEAP *minHeap){
-    int parent = getParent(index); 
+    int parent = getParent(index);
     while(index>0 && getLength(parent, *minHeap)>getLength(index,*minHeap)){
         swap(index,parent,minHeap);
         index = parent;
-        parent = getParent(index);    
+        parent = getParent(index);
     }
 
 }
+
 
 void downHeap(HEAP *minHeap){
     //downHeap will only be called when the array is full. The insertion is always at the root.
@@ -298,41 +321,64 @@ void downHeap(HEAP *minHeap){
             break;
         }
 
-      
+
 
     }
 
 }
 
+
 void swapMin(char word[], HEAP *minHeap){
-    
+
     minHeap->wordHeap[0] = createNode(word);
     downHeap(minHeap);
 
 }
 
+
 //get parent index
 int getParent(int childIndex){
   return (childIndex - 1) / 2;
 }
+
 int leftChildren(int parentIndex){//get left child index
   return 2 * parentIndex + 1;
 }
+
+
 int rightChildren(int parentIndex){//get right child index. return function
   return 2 * parentIndex + 2;
 }
+
+
 int getLength(int index, HEAP minHeap){
     int length = minHeap.wordHeap[index].length;
     return length;
 }
 
+
 void swap(int index1, int index2, HEAP *minHeap){
 
     NODE temp = minHeap->wordHeap[index1];
-    minHeap->wordHeap[index1] = minHeap->wordHeap[index2]; 
+    minHeap->wordHeap[index1] = minHeap->wordHeap[index2];
     minHeap->wordHeap[index2]= temp;
 
 
+}
+
+*/
+
+/* ------------------------------ */
+/* ----- ALL DFS FUNCTIONS ----- */
+/* ------------------------------ */
+/* ------------------------------ */
+link_word* initialized_link_word(short x, short y, char value){
+  link_word *new_node = (link_word*)malloc(sizeof(link_word));
+  new_node->x = x;
+  new_node->y = y;
+  new_node->letter = value;
+  new_node->next = NULL;
+  return new_node;
 }
 
 tree_t* search_letter(tree_t *dictionary, char value){
@@ -348,43 +394,38 @@ tree_t* search_letter(tree_t *dictionary, char value){
   return NULL;
 }
 
-void push_letter(Link_word **word, short x, short y, char value){
-    Link_word *new_node = initialized_link_word(x, y, value);
+/* ------------------------------ */
+void push_letter(link_word **word, short x, short y, char value){
+    link_word *new_node = initialized_link_word(x, y, value);
     new_node->next = *word;
     *word = new_node;
     if (value == 'Q'){
-      Link_word *new_node_2 = initialized_link_word(x, y, 'U');
+      link_word *new_node_2 = initialized_link_word(x, y, 'U');
       new_node_2 = *word;
       *word = new_node_2;
     }
 }
 
-Link_word* initialized_link_word(short x, short y, char value){
-  Link_word *new_node = (Link_word*)malloc(sizeof(Link_word));
-  new_node->x = x;
-  new_node->y = y;
-  new_node->letter = value;
-  new_node->next = NULL;
-  return new_node;
-}
 
-void pop_letter(Link_word **word){
+/* ------------------------------ */
+void pop_letter(link_word **word){
   if(*word != NULL){
-    Link_word *curr_node = *word;
+    link_word *curr_node = *word;
     *word = (*word)->next;
     free(curr_node);
   }
 }
 
+/* ------------------------------ */
 //the dfs function should be call in another function since the initial position should be changed
-void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *letter_location, HEAP **Heap_word, Link_word **word){
-  
+void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *letter_location, HEAP **Heap_word, link_word **word){
+
   //saves the position of the letter, the function returns -1 if the letter wasn't found
   letter_location = search_letter((*dictionary)->children, boggle[pos_x][pos_y].value);
-  
+
   //if the letter was found continue with the DFS
   if (letter_location != NULL){
-    
+
     //add to the link_word
     push_letter(&(*word), pos_x, pos_y, letter_location->letter);
 
@@ -398,7 +439,7 @@ void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *l
       //insertWord(&(*Heap_word), )
       letter_location->is_word = false;
     }
-    
+
     //sets the letter in the map as already visited
     boggle[pos_x][pos_y].visited = true;
 
@@ -486,9 +527,17 @@ void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *l
     //sets the letter in the map as not visited
     boggle[pos_x][pos_y].visited = false;
   }
-  
+
 }
 
+
+
+
+
+
+/* ------------------------------ */
+/* ---- EVALUATION FUNCTIONS ---- */
+/* ------------------------------ */
 // initialize BogglePlayer with a file of English words
 void initBogglePlayer(char* word_file) {
   //declaring root to dictionary tree
