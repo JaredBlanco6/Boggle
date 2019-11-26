@@ -277,7 +277,7 @@ Word createNode(char word[], link_word *head){
     int size = entry.path_length;
     link_word *temp = head;
 
-      for(int i =0;i<size;i++){
+      for(int i =size;i>=0;i--){
           if(temp !=NULL){
             entry.path[i].row = temp->x;
             entry.path[i].column = temp->y;
@@ -718,6 +718,7 @@ WordList* getWords(char board[4][4]) {
 
   Location temp;
 
+/*
   //OUR PATH IS BACKWARDS!!!!! WE WILL FIX THIS
   //loops through all words
   for(int i = 0; i < myWords.length; i++){
@@ -737,13 +738,13 @@ WordList* getWords(char board[4][4]) {
       myWords.wordlist[i].path[myWords.wordlist[i].path_length - z - 1].column = temp.column;
     }
   }
-
+*/
 
   printf("length %d\n", myWords.length);
   printf("PRINTING WORDS\n");
   for(int i = 0; i < 20; i++){
 
-    printf("%s %d\n", myWords.wordlist[i].word,myWords.wordlist[i].path_length);
+    printf("%s %d\n", myWords.wordlist[i].word, myWords.wordlist[i].path_length);
 
     printf("path: ");
     for(int z = 0; z < myWords.wordlist[i].path_length; z++){
