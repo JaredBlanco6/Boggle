@@ -19,7 +19,7 @@
 #include "word.h"
 
 #define MAX_SIZE 10
-
+/*
 #ifndef WORD_H
 #define WORD_H
 
@@ -44,7 +44,7 @@ typedef struct wordList {
   Word     wordlist[MAX_WORDLIST_LEN];   // at most 20 words
   int      length;                       // actual number of words
 } WordList;
-
+*/
 
 
 
@@ -52,20 +52,7 @@ typedef struct wordList {
 
 
 
-typedef struct NODE{
-    char word[18];
-    int length;
-    int path[16][2];
 
-}NODE;
-
-//holds the heap info
-typedef struct index{
-
-    NODE wordHeap[MAX_SIZE];
-
-    int position; // The position where you have to insert the next word
-}HEAP;
 
 //used map structue in our DFS
 typedef struct map{
@@ -81,19 +68,19 @@ typedef struct link_word{
 }link_word;
 
 
-bool isFull(HEAP);
-void insertWord(link_word *, HEAP *);
+bool isFull(WordList);
+void insertWord(link_word *, WordList *);
 Word createNode(char *, link_word *);
-void upHeap(int, HEAP *);
-void downHeap(HEAP *);
+void upHeap(int, WordList *);
+void downHeap(WordList *);
 int getParent(int );
 int leftChildren(int);
 int rightChildren(int);
-void upHeap(int, HEAP*);
-int getLength(int, HEAP);
-void swapMin(char [], HEAP *, link_word *);
+void upHeap(int, WordList*);
+int getLength(int, WordList);
+void swapMin(char [], WordList *, link_word *);
 int getSize(link_word *);
-void swap(int, int, HEAP *);
+void swap(int, int, WordList *);
 void getString(char [], int,link_word *);
 //structs for tree
 typedef struct tree_t{
@@ -270,9 +257,9 @@ void freeList(tree_t** parent){
 /* ------------------------------ */
 
 //Checks if the Heap is full
-bool isFull(HEAP minHeap){
+bool isFull(WordList minHeap){
     //if the next position equals the maximum size of the heap return True for full
-    if(minHeap.position == MAX_SIZE){
+    if(minHeap.length == MAX_SIZE){
         return true;
     }
     //otherwise the heap is not full so return false
@@ -284,16 +271,17 @@ bool isFull(HEAP minHeap){
 
 //Creates a node of type NODE and returns it 
 Word createNode(char word[], link_word *head){
-    NODE entry;
+    Word entry;
     strcpy(entry.word, word);
     entry.path_length = strlen(word);
+    int size = entry.path_length;
     link_word *temp = head;
 
-      for(int i =0;i<16;i++){
+      for(int i =0;i<size;i++){
           if(temp !=NULL){
-          entry.path[ = temp->x;
-          entry.path[i][1]= temp->y;
-          temp = temp->next;
+            entry.path[i].row = temp->x;
+            entry.path[i].column = temp->y;
+            temp = temp->next;
           }
           else{
             break;
@@ -332,7 +320,7 @@ void getString(char word[], int length, link_word *head){
 }
 
 //this function is called in the DFS everytime we found a valid word
-void insertWord(link_word *head , HEAP *minHeap){
+void insertWord(link_word *head , WordList *minHeap){
     //Calls getSize and it assigns it to the size of the word
     int size = getSize(head);
     char word[size];
@@ -340,16 +328,16 @@ void insertWord(link_word *head , HEAP *minHeap){
     getString(word, size, head);
     // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
-        int index = (minHeap)->position;
+        int index = (minHeap)->length;
         //the new word is inserted in the heap in the correct position
-        (minHeap)->wordHeap[index] = createNode(word, head);
+        (minHeap)->wordlist[index] = createNode(word, head);
         //the new position is updated by addidng one value
-        (minHeap)->position = index +1;
+        (minHeap)->length = index +1;
         //After the new word is inserted upHeap function is called to sort the heap
         upHeap(index, (minHeap));
     }
     //if the heap is full it checks if current word is larger than the root
-    else if(size > minHeap->wordHeap[0].length){
+    else if(size > minHeap->wordlist[0].path_length){
         //If true then swap with the root
         swapMin(word, minHeap,head);
 
@@ -363,7 +351,7 @@ void insertWord(link_word *head , HEAP *minHeap){
 }
 
 //
-void upHeap(int index, HEAP *minHeap){
+void upHeap(int index, WordList *minHeap){
     //Calls upheap after inserting the node in the right position
     //It is only called when the heap is not full
     int parent = getParent(index);
@@ -379,10 +367,10 @@ void upHeap(int index, HEAP *minHeap){
 
 }
 
-void downHeap(HEAP *minHeap){
+void downHeap(WordList *minHeap){
     //downHeap will only be called when the array is full. The insertion is always at the root.
     int index = 0;
-    int size = minHeap->position;
+    int size = minHeap->length;
     //As long as the children is bigger than the parent and the index is lower than the maximum size of the heap
     while(index<size && leftChildren(index)<size){
         //if the length of the left child is smaller than the length of the inserted word then swap nodes
@@ -411,9 +399,9 @@ void downHeap(HEAP *minHeap){
 
 //This function is called when the heap is full
 //It swaps the shortes word in the heap with the new minimum word which will hold a bigger length than the previous Min
-void swapMin(char word[], HEAP *minHeap, link_word *head){
+void swapMin(char word[], WordList *minHeap, link_word *head){
     //It swaps the new shortes word with the word that was initially at the root
-    minHeap->wordHeap[0] = createNode(word,head);
+    minHeap->wordlist[0] = createNode(word,head);
     downHeap(minHeap);//Calls down heap to check for the right position of the new inserted word.
 
 }
@@ -434,18 +422,18 @@ int rightChildren(int parentIndex){//get right child index. return function
 }
 
 
-int getLength(int index, HEAP minHeap){
+int getLength(int index, WordList minHeap){
 
-    int length = minHeap.wordHeap[index].length;//It stores the length of the word in the heap at the right index
+    int length = minHeap.wordlist[index].path_length;//It stores the length of the word in the heap at the right index
     return length;//returns the length of the word
 }
 
 
-void swap(int index1, int index2, HEAP *minHeap){
+void swap(int index1, int index2, WordList *minHeap){
 
-    NODE temp = minHeap->wordHeap[index1];
-    minHeap->wordHeap[index1] = minHeap->wordHeap[index2];
-    minHeap->wordHeap[index2]= temp;
+    Word temp = minHeap->wordlist[index1];
+    minHeap->wordlist[index1] = minHeap->wordlist[index2];
+    minHeap->wordlist[index2]= temp;
 
 
 }
@@ -501,7 +489,7 @@ void pop_letter(link_word **word){
 
 /* ------------------------------ */
 //the dfs function should be call in another function since the initial position should be changed
-void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *letter_location, HEAP **Heap_word, link_word **word){
+void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *letter_location, WordList **Heap_word, link_word **word){
 
   //saves the position of the letter, the function returns -1 if the letter wasn't found
   letter_location = search_letter((*dictionary)->children, boggle[pos_x][pos_y].value);
