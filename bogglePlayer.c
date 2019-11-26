@@ -619,6 +619,7 @@ void initBogglePlayer(char* word_file) {
   decalre_root(&dictionary_tree);
 
 
+
   //scans in our dicitonary and adds all of the letters from words into our tree
   make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
 
@@ -671,18 +672,24 @@ WordList* getWords(char board[4][4]) {
 	}
 	// 	Generating and printing the map
 
+  printf("CHECKPOITN 1\n");
+
 	for (int i = 0; i < 4; i++){
 		for(int j = 0; j < 4; j++){
 			DFS(i,j, bogglemap, &dictionary_tree, letter_location, &myWords, &word);
 		}
 	}
 	//	Double for loop of the DFS
-
+printf("CHECKPOITN 2\n");
     //WordList* myWords = getNewWordList();
 
 
+    for(int i = 0; i < 20; i++){
+      printf("PRINTING WORDS\n");
+      printf("%s\n", myWords.wordlist[i].word);
+    }
 
-
+    freeList(&(dictionary_tree));
     return &myWords;
 }
 
