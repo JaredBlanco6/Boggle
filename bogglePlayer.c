@@ -453,15 +453,19 @@ link_word* initialized_link_word(short x, short y, char value){
 }
 
 tree_t* search_letter(tree_t *dictionary, char value){
-  if (dictionary == NULL)
+  if (dictionary == NULL){
     return NULL;
+  }
+
+
   while(dictionary != NULL){
-    if (dictionary->letter == value)
+    if (dictionary->letter == value){
       return dictionary;
-    else if(dictionary->letter > value)
-      return NULL;
+    }
     dictionary = dictionary->next;
   }
+
+
   return NULL;
 }
 
