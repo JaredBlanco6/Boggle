@@ -19,40 +19,6 @@
 #include "word.h"
 
 #define MAX_SIZE 20
-/*
-#ifndef WORD_H
-#define WORD_H
-
-#define MAX_WORD_LEN 16      // 4x4 board, at most 16 letters
-#define MAX_WORDLIST_LEN 20  // maximum 20 words
-
-// location of a letter
-typedef struct location {
-  int    row;                      // 0 to 3
-  int    column;                   // 0 to 3
-} Location;
-
-// word has the string and path
-typedef struct word {
-  char     word[MAX_WORD_LEN + 1];  // terminated with '\0'
-  Location path[MAX_WORD_LEN];      // path of the letters in the word
-  int      path_length;             // actual number of letters/locations in the path
-} Word;
-
-// a list of words
-typedef struct wordList {
-  Word     wordlist[MAX_WORDLIST_LEN];   // at most 20 words
-  int      length;                       // actual number of words
-} WordList;
-*/
-
-
-
-//used in the heap
-
-
-
-
 
 //used map structue in our DFS
 typedef struct map{
@@ -67,6 +33,19 @@ typedef struct link_word{
   struct link_word* next;
 }link_word;
 
+//structs for tree
+typedef struct tree_t{
+  //each node has a little that will form a word
+  char letter;
+  //flag that all the letters make a word, still use 0 and 1
+  char is_word;
+  //a single pointer to my parent node
+  struct tree_t* parent;
+  //pointer to a list of children
+  struct tree_t* children;
+  //points to the text node in the list
+  struct tree_t* next;
+}tree_t;
 
 bool isFull(WordList);
 void insertWord(link_word *, WordList *);
@@ -82,19 +61,7 @@ void swapMin(char [], WordList *, link_word *);
 int getSize(link_word *);
 void swap(int, int, WordList *);
 void getString(char [], int,link_word *);
-//structs for tree
-typedef struct tree_t{
-  //each node has a little that will form a word
-  char letter;
-  //flag that all the letters make a word, still use 0 and 1
-  char is_word;
-  //a single pointer to my parent node
-  struct tree_t* parent;
-  //pointer to a list of children
-  struct tree_t* children;
-  //points to the text node in the list
-  struct tree_t* next;
-}tree_t;
+
 
 
 /* ------------------------------ */
