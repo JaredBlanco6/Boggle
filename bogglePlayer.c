@@ -269,7 +269,7 @@ bool isFull(WordList minHeap){
 }
 
 
-//Creates a node of type NODE and returns it 
+//Creates a node of type NODE and returns it
 Word createNode(char word[], link_word *head){
     Word entry;
     strcpy(entry.word, word);
@@ -491,7 +491,7 @@ void pop_letter(link_word **word){
 //the dfs function should be call in another function since the initial position should be changed
 void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t *letter_location, WordList *Heap_word, link_word **word){
 // MAP boggle[4][4] to be passed in
-// Wordlist heapword to be passed in 
+// Wordlist heapword to be passed in
 
   //saves the position of the letter, the function returns -1 if the letter wasn't found
   letter_location = search_letter((*dictionary)->children, boggle[pos_x][pos_y].value);
@@ -509,7 +509,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
       use a function that calls add_heap (because we want to remove to min word if the heap is full)
       (implement something similar to stack to save the word)
       */
-      insertWord(*word, *Heap_word);
+      insertWord(*word, Heap_word);
       letter_location->is_word = false;
     }
 
@@ -518,7 +518,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
 
     //checks if the upper position was visited
     if (pos_x-1 > -1 && boggle[pos_x-1][pos_y].visited == false){
-      DFS(pos_x-1, pos_y, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x-1, pos_y, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -528,7 +528,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //Checks if the lower position was visited
     if (pos_x+1 < 4 && boggle[pos_x+1][pos_y].visited == false){
-      DFS(pos_x+1, pos_y, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x+1, pos_y, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -538,7 +538,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //checks if the right position was visited
     if (pos_y+1 < 4 && boggle[pos_x][pos_y+1].visited == false){
-      DFS(pos_x, pos_y+1, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x, pos_y+1, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -548,7 +548,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //checks if the left position was visited
     if (pos_y-1 < -1 && boggle[pos_x][pos_y-1].visited == false){
-      DFS(pos_x, pos_y-1, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x, pos_y-1, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -558,7 +558,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //Checks if the lower right diagonial position was visited
     if (pos_x+1 < 4 && pos_y+1 < 4 && boggle[pos_x+1][pos_y+1].visited == false){
-      DFS(pos_x+1, pos_y+1, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x+1, pos_y+1, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -568,7 +568,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //Checks if the lower left diagonial position was visited
     if (pos_x+1 < 4 && pos_y-1 > -1 && boggle[pos_x+1][pos_y-1].visited == false){
-      DFS(pos_x+1, pos_y-1, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x+1, pos_y-1, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -578,7 +578,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //Checks if the upper left diagonial position was visited
     if (pos_x-1 > -1 && pos_y-1 > -1 && boggle[pos_x-1][pos_y-1].visited == false){
-      DFS(pos_x-1, pos_y-1, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x-1, pos_y-1, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -588,7 +588,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //Checks if the upper left diagonial position was visited
     if (pos_x-1 > -1 && pos_y+1 < 4 && boggle[pos_x-1][pos_y+1].visited == false){
-      DFS(pos_x-1, pos_y-1, boggle, &(letter_location), NULL, &(*Heap_word), &(*word));
+      DFS(pos_x-1, pos_y-1, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -654,12 +654,12 @@ WordList* getWords(char board[4][4]) {
 	tree_t *letter_location = NULL;
 	// letter location in the tree
 	// Initialized to null
-	
+
 	// Heap called myWords
-	WordList myWords;
+	static WordList myWords;
 	link_word *word = NULL;
 	//	Word pointer for generatiing the word stack in the DFS
-	
+
 	MAP bogglemap[4][4];
 	for(int i = 0; i < 4; i++){
 		for(int j = 0; j<4; j++){
@@ -670,20 +670,20 @@ WordList* getWords(char board[4][4]) {
 		printf("\n");
 	}
 	// 	Generating and printing the map
-	
+
 	for (int i = 0; i < 4; i++){
 		for(int j = 0; j < 4; j++){
 			DFS(i,j, bogglemap, &dictionary_tree, letter_location, &myWords, &word);
 		}
 	}
 	//	Double for loop of the DFS
-	
-    WordList* myWords = getNewWordList();
 
-    sampleWordList(myWords);
+    //WordList* myWords = getNewWordList();
 
 
-    return myWords;
+
+
+    return &myWords;
 }
 
 
