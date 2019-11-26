@@ -507,7 +507,7 @@ void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *l
       use a function that calls add_heap (because we want to remove to min word if the heap is full)
       (implement something similar to stack to save the word)
       */
-      //insertWord(&(*Heap_word), )
+      insertWord(*word, *Heap_word);
       letter_location->is_word = false;
     }
 
