@@ -20,7 +20,7 @@
   a.  totalPoints: total points of found words
   b.  speed: time in second for finding words
   c.  space consumption: memory consumption
-  d.  overall score--(totalPoints^2)/sqrt(time * memory)  
+  d.  overall score--(totalPoints^2)/sqrt(time * memory)
 
 
   --------Pseudocode for evaluating BogglePlayer---------------
@@ -120,6 +120,15 @@ int main (int argc, char* argv[]) {
     WordList* guessedWords = getWords(board);
     int endTime = clock();
 
+    /*
+    printf("INSIDE THE TEST PROGRAM\n");
+    printf("length %d\n", guessedWords->length);
+    for(int i = 0; i < 20; i++){
+      printf("PRINTING WORDS\n");
+      printf("%s %d\n", guessedWords->wordlist[i].word,guessedWords->wordlist[i].path_length);
+    }
+    */
+
         // Calculate the used memory
     int memory = getPeakMemory();
 
@@ -182,14 +191,15 @@ int calculate_points(WordList* words, char board[4][4]) {
   if (wordListLen < 0)
     {
       printf("Your word list has negative length: %d\n", words->length);
-      return 0;  
+      return 0;
     }
-  else if (wordListLen > 20) 
+  else if (wordListLen > 20)
     {
+
       wordListLen = 20;              // only the first 20 are counted
       points -= (wordListLen - 20);  // Penalty if more than 20 words were returned
     }
-	  
+
 
   // Calculate points for the first 20 words or fewer
   for (int index = 0; index < wordListLen; index++) {
@@ -200,12 +210,14 @@ int calculate_points(WordList* words, char board[4][4]) {
       for (int i = 0; i < index; i++) {
 	if (strcmp(w->word, words->wordlist[i].word) == 0) {
 	  duplicate = true;
+
 	  break;
 	}
       }
 
       // If the word is duplicate then give penalty, else check if word is valid
       if (duplicate) {
+
 	points -= (w->path_length - 2) * (w->path_length - 2);
       } else {
 	points += checkForWordValidity(w, board);
@@ -261,6 +273,7 @@ int checkForWordValidity(Word* word, char board[4][4]) {
 		int col = word->path[i].column;
 
 		if (used[row][col] || board[row][col] != word->word[letter_index]) {
+
 			return -((length - 2) * (length - 2));
 		} else {
 			used[row][col] = true;
@@ -281,7 +294,6 @@ int checkForWordValidity(Word* word, char board[4][4]) {
 	if (!in_dictionary) {
 		return -((length - 2) * (length - 2));
 	}
-
 	return (length - 2) * (length - 2);
 }
 
