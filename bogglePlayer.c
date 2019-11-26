@@ -269,7 +269,7 @@ bool isFull(WordList minHeap){
 }
 
 
-//Creates a node of type NODE and returns it 
+//Creates a node of type NODE and returns it
 Word createNode(char word[], link_word *head){
     Word entry;
     strcpy(entry.word, word);
@@ -489,7 +489,7 @@ void pop_letter(link_word **word){
 
 /* ------------------------------ */
 //the dfs function should be call in another function since the initial position should be changed
-void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t *letter_location, WordList *Heap_word, link_word **word){
+void DFS(short pos_x, short pos_y, MAP *boggle[], tree_t **dictionary, tree_t *letter_location, WordList **Heap_word, link_word **word){
 
   //saves the position of the letter, the function returns -1 if the letter wasn't found
   letter_location = search_letter((*dictionary)->children, boggle[pos_x][pos_y].value);
@@ -618,11 +618,11 @@ void initBogglePlayer(char* word_file) {
 
 
   //scans in our dicitonary and adds all of the letters from words into our tree
-  make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
+  make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS, AND COMPRE THE FULL TREE
 
 
   //free's our tree
-  //freeList(&(dictionary_tree));
+  freeList(&(dictionary_tree));
 
 
 }
@@ -642,34 +642,8 @@ void  sampleWordList(WordList* myWords);   // a sample function to populate a wo
 //
 // See word.h for details of the struct for Word, WordList, Location, and access functions
 
-
-tree_t *dictionary_tree = NULL;
-
 WordList* getWords(char board[4][4]) {
-	printf("Testing\n");
-	tree_t *letter_location = NULL;
-	WordList myWords;
-	link_word *word = NULL;
-	
-	MAP bogglemap[4][4];
-	for(int i = 0; i < 4; i++){
-		for(int j = 0; j<4; j++){
-			bogglemap[i][j].value = board[i][j];
-			bogglemap[i][j].visited = false;
-			printf("%c ", bogglemap[i][j].value);
-		}
-		printf("\n");
-	}
-	printf("%p\n", dictionary_tree);
-	//printf("LETTER %c\n", dictionary_tree -> children -> next -> next -> letter);
-	
-	for (int i = 0; i < 4; i++){
-		for(int j = 0; j < 4; j++){
-			DFS(i,j, bogglemap, &dictionary_tree, letter_location, &myWords, &word);
-		}
-	}
-	
-	
+
     WordList* myWords = getNewWordList();
 
     sampleWordList(myWords);
