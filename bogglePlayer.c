@@ -277,7 +277,7 @@ Word createNode(char word[], link_word *head){
     int size = entry.path_length;
     link_word *temp = head;
 
-      for(int i =size;i>=0;i--){
+      for(int i =size-1;i>=-0;i--){
           if(temp !=NULL){
             entry.path[i].row = temp->x;
             entry.path[i].column = temp->y;
