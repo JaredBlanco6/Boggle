@@ -321,7 +321,7 @@ void getString(char word[], int length, link_word *head){
 
 //this function is called in the DFS everytime we found a valid word
 void insertWord(link_word *head , WordList *minHeap){
-    printf("inside fun ");
+    //printf("inside fun ");
     //Calls getSize and it assigns it to the size of the word
     int size = getSize(head);
     char word[size];
@@ -329,7 +329,6 @@ void insertWord(link_word *head , WordList *minHeap){
     getString(word, size, head);
     // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
-        printf("RIGHT HERE\n");
         int index = (minHeap)->length;
         //the new word is inserted in the heap in the correct position
         (minHeap)->wordlist[index] = createNode(word, head);
@@ -545,8 +544,8 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
       */
       insertWord(*word, Heap_word);
       letter_location->is_word = false;
-      printf("Word found ");
-      print_link_word(&(*word));
+      //printf("Word found ");
+      //print_link_word(&(*word));
     }
 
     //sets the letter in the map as already visited
@@ -719,7 +718,7 @@ WordList* getWords(char board[4][4]) {
 
   Location temp;
 
-  //OUR PATH IS BACKWARDS!!!!! WE WILL FIX THIS LATER
+  //OUR PATH IS BACKWARDS!!!!! WE WILL FIX THIS
   //loops through all words
   for(int i = 0; i < myWords.length; i++){
 
@@ -741,8 +740,9 @@ WordList* getWords(char board[4][4]) {
 
 
   printf("length %d\n", myWords.length);
+  printf("PRINTING WORDS\n");
   for(int i = 0; i < 20; i++){
-    printf("PRINTING WORDS\n");
+
     printf("%s %d\n", myWords.wordlist[i].word,myWords.wordlist[i].path_length);
 
     printf("path: ");
