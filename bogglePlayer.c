@@ -711,12 +711,13 @@ WordList* getWords(char board[4][4]) {
   printf("PRINTING WORDS\n");
   for(int i = 0; i < 20; i++){
 
-    printf("%s %d\n", myWords.wordlist[i].word, myWords.wordlist[i].path_length);
+    printf("%s %d ", myWords.wordlist[i].word, myWords.wordlist[i].path_length);
 
     printf("path: ");
     for(int z = 0; z < myWords.wordlist[i].path_length; z++){
       printf("(%d,%d) ", myWords.wordlist[i].path[z].row, myWords.wordlist[i].path[z].column);
     }
+    printf("\n");
   }
 
 
