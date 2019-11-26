@@ -465,7 +465,6 @@ tree_t* search_letter(tree_t *dictionary, char value){
     dictionary = dictionary->next;
   }
 
-
   return NULL;
 }
 
@@ -474,6 +473,7 @@ void push_letter(link_word **word, short x, short y, char value){
     link_word *new_node = initialized_link_word(x, y, value);
     new_node->next = *word;
     *word = new_node;
+    //printf("letters %c\n", new_node->letter);
     if (value == 'Q'){
       link_word *new_node_2 = initialized_link_word(x, y, 'U');
       new_node_2 = *word;
@@ -487,28 +487,54 @@ void pop_letter(link_word **word){
   if(*word != NULL){
     link_word *curr_node = *word;
     *word = (*word)->next;
+    //printf("removing %c\n", curr_node->letter);
     free(curr_node);
   }
 }
 
 /* ------------------------------ */
+
+//TRASH BEGING
+void print_link_word(link_word **word){
+  int counter = 0;
+  link_word *curr_node = *word;
+
+  while(curr_node != NULL){
+    counter++;
+    curr_node = curr_node->next;
+  }
+
+  char word_c[counter+1];
+  word_c[counter] = '\0';
+
+  curr_node = *word;
+
+  for (int i = counter-1; i > -1; i--) {
+    word_c[i] = curr_node->letter;
+    curr_node = curr_node->next;
+  }
+  printf("%s\n", word_c);
+}
+//TRASG ENDS
+
 //the dfs function should be call in another function since the initial position should be changed
 void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t *letter_location, WordList *Heap_word, link_word **word){
 // MAP boggle[4][4] to be passed in
 // Wordlist heapword to be passed in
-  printf("CHECKPOITN 2\n");
+
+
   //saves the position of the letter, the function returns -1 if the letter wasn't found
   letter_location = search_letter((*dictionary)->children, boggle[pos_x][pos_y].value);
 
-  printf("CHECKPOITN 3\n");
+  //add to the link_word
+  push_letter(&(*word), pos_x, pos_y, boggle[pos_x][pos_y].value);
+
+
+
   //if the letter was found continue with the DFS
   if (letter_location != NULL){
-    printf("CHECKPOITN 4\n");
-    //add to the link_word
-    push_letter(&(*word), pos_x, pos_y, letter_location->letter);
 
     //if this is a word (1 for word) then save it in the array
-    printf("CHECKPOITN 5\n");
     if (letter_location->is_word == true){
       //save word in the array
       /*
@@ -516,14 +542,13 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
       (implement something similar to stack to save the word)
       */
       insertWord(*word, Heap_word);
-      printf("CHECKPOITN 6\n");
       letter_location->is_word = false;
-      printf("CHECKPOITN 7\n");
+      printf("Word found ");
+      print_link_word(&(*word));
     }
 
     //sets the letter in the map as already visited
     boggle[pos_x][pos_y].visited = true;
-    printf("CHECKPOITN 8\n");
 
     //checks if the upper position was visited
     if (pos_x-1 > -1 && boggle[pos_x-1][pos_y].visited == false){
@@ -621,9 +646,13 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
 /* ---- EVALUATION FUNCTIONS ---- */
 /* ------------------------------ */
 // initialize BogglePlayer with a file of English words
+
+//declaring root to dictionary tree
+tree_t *dictionary_tree = NULL;
+
+
 void initBogglePlayer(char* word_file) {
-  //declaring root to dictionary tree
-  static tree_t *dictionary_tree = NULL;
+
   //fills first layer of letter
   decalre_root(&dictionary_tree);
 
@@ -655,8 +684,8 @@ void  sampleWordList(WordList* myWords);   // a sample function to populate a wo
 // See word.h for details of the struct for Word, WordList, Location, and access functions
 
 
-tree_t *dictionary_tree = NULL;
-// Global tree right here
+
+
 
 WordList* getWords(char board[4][4]) {
 	printf("Testing\n");
@@ -685,6 +714,7 @@ WordList* getWords(char board[4][4]) {
 
 	for (int i = 0; i < 4; i++){
 		for(int j = 0; j < 4; j++){
+      word = NULL;
 			DFS(i,j, bogglemap, &dictionary_tree, letter_location, &myWords, &word);
 		}
 	}
