@@ -83,11 +83,14 @@ tree_t* create_node(char letter, tree_t *parent, short is_word){
 /* ------------------------------ */
 //adds a letter to a linked list in order
 void addNode(tree_t*parent, char new_letter, short is_word){
-  //create my node and load it with dat
-  tree_t*new_child = create_node(new_letter, parent, is_word);
+
 
   //adding our first child
   if(parent->children == NULL){
+    //create my node and load it with data
+    tree_t*new_child = create_node(new_letter, parent, is_word);
+
+
     parent->children = new_child;
     return;
   }
@@ -103,7 +106,6 @@ void addNode(tree_t*parent, char new_letter, short is_word){
     if(current_node->next->is_word < is_word){
       current_node->next->is_word = is_word;
     }
-    free(new_child);
     return;
   }
   //checks for duplicates in the current node if we are adding to end
@@ -112,10 +114,11 @@ void addNode(tree_t*parent, char new_letter, short is_word){
     if(current_node->is_word < is_word){
       current_node->is_word = is_word;
     }
-
-    free(new_child);
     return;
   }
+
+  //create my node and load it with data
+  tree_t*new_child = create_node(new_letter, parent, is_word);
 
 
   //adding to a list with only 1 child
