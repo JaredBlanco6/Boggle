@@ -20,7 +20,7 @@
   a.  totalPoints: total points of found words
   b.  speed: time in second for finding words
   c.  space consumption: memory consumption
-  d.  overall score--(totalPoints^2)/sqrt(time * memory)
+  d.  overall score--(totalPoints^2)/sqrt(time * memory)  
 
 
   --------Pseudocode for evaluating BogglePlayer---------------
@@ -99,7 +99,8 @@ int main (int argc, char* argv[]) {
     srand(seed);
 
     // Generate random board, and pass it to bogglePlayer to play Boggle
-    char board[4][4];
+    char board[4][4], // original version, cannot be touched by bogglePlayer
+         boardCopy[4][4]; // a copy of the original to be passed to bogglePlayer
     int length = 16;
 
     // Create random board
@@ -108,6 +109,7 @@ int main (int argc, char* argv[]) {
             int dice_index = rand() % length;
             char* dice = boggle_dices[dice_index];
             board[i][j] = dice[rand() % 6];
+            boardCopy[i][j] = board[i][j];
             strcpy(boggle_dices[dice_index], boggle_dices[length - 1]);
             strcpy(boggle_dices[length - 1], dice);
             length--;
@@ -115,24 +117,20 @@ int main (int argc, char* argv[]) {
     }
 
     // Calculate the time taken to find the words on the board
-    int startTime = clock();
+    clock_t startTime = clock();
     // Play the game of Boggle and find the words
-    WordList* guessedWords = getWords(board);
-    int endTime = clock();
-
-    /*
-    printf("INSIDE THE TEST PROGRAM\n");
-    printf("length %d\n", guessedWords->length);
-    for(int i = 0; i < 20; i++){
-      printf("PRINTING WORDS\n");
-      printf("%s %d\n", guessedWords->wordlist[i].word,guessedWords->wordlist[i].path_length);
-    }
-    */
+    WordList* guessedWords = getWords(boardCopy);
+    clock_t endTime = clock();
 
         // Calculate the used memory
-    int memory = getPeakMemory();
+    long memory = getPeakMemory();
 
-    double totalElapsedTime = endTime - startTime;
+    double totalElapsedTime = (double)(endTime - startTime);
+
+    if (totalElapsedTime <= 0) // too small to measure, unlikely
+       totalElapsedTime = 1;
+    if (memory <= 0) // too small to measure, highly unlikely
+       memory = 1;
 
     // Convert elapsed time into seconds, and calculate the average time
     totalElapsedTime = totalElapsedTime / CLOCKS_PER_SEC;
@@ -140,11 +138,6 @@ int main (int argc, char* argv[]) {
         printf("*** getWords() exceeded 3 minutes ***\n");
         exit(-1);
     }
-    if (totalElapsedTime <= 0) // too small to measure, unlikely
-       totalElapsedTime = 1.0 / CLOCKS_PER_SEC;
-    if (memory <= 0) // too small to measure, highly unlikely
-       memory = 1;
-
 
     // Calculate points for the words found
     int total_points = calculate_points(guessedWords, board);
@@ -152,7 +145,7 @@ int main (int argc, char* argv[]) {
     // Output performance metrics
     printf("Points: %d\n", total_points);
     printf("Time in seconds: %.4e\n", totalElapsedTime);
-    printf("Used memory in bytes: %d\n", memory);
+    printf("Used memory in bytes: %ld\n", memory);
     printf("Overall performance: %.4lf\n",
                (total_points * total_points) / sqrt(totalElapsedTime * memory));
 }
@@ -160,13 +153,18 @@ int main (int argc, char* argv[]) {
 // call initBogglePlayer in bogglePlayer
 // report time and memory for preprocessing
 void preprocessingInBogglePlayer(char* wordFile) {
-    printf("Preprocessing in bogglePlayer...\n");
+        printf("Preprocessing in bogglePlayer...\n");
+
         clock_t startTime, endTime;
         startTime = clock();
         initBogglePlayer(wordFile);
         endTime = clock();
 
-	double initTime = ((double) (endTime - startTime)) / CLOCKS_PER_SEC;
+        double initTime = (double) (endTime - startTime);
+        if (initTime <= 0) // too small to measure, unlikely
+	  initTime = 1.0;
+	initTime = initTime / CLOCKS_PER_SEC; // convert to seconds
+
         printf("cpu time in seconds (not part of score): %.4e\n", initTime);
         printf("memory in bytes (not part of score): %ld\n",
                 getPeakMemory());
@@ -191,15 +189,14 @@ int calculate_points(WordList* words, char board[4][4]) {
   if (wordListLen < 0)
     {
       printf("Your word list has negative length: %d\n", words->length);
-      return 0;
+      return 0;  
     }
-  else if (wordListLen > 20)
+  else if (wordListLen > 20) 
     {
-
       wordListLen = 20;              // only the first 20 are counted
       points -= (wordListLen - 20);  // Penalty if more than 20 words were returned
     }
-
+	  
 
   // Calculate points for the first 20 words or fewer
   for (int index = 0; index < wordListLen; index++) {
@@ -210,14 +207,12 @@ int calculate_points(WordList* words, char board[4][4]) {
       for (int i = 0; i < index; i++) {
 	if (strcmp(w->word, words->wordlist[i].word) == 0) {
 	  duplicate = true;
-
 	  break;
 	}
       }
 
       // If the word is duplicate then give penalty, else check if word is valid
       if (duplicate) {
-
 	points -= (w->path_length - 2) * (w->path_length - 2);
       } else {
 	points += checkForWordValidity(w, board);
@@ -273,7 +268,6 @@ int checkForWordValidity(Word* word, char board[4][4]) {
 		int col = word->path[i].column;
 
 		if (used[row][col] || board[row][col] != word->word[letter_index]) {
-
 			return -((length - 2) * (length - 2));
 		} else {
 			used[row][col] = true;
@@ -294,6 +288,7 @@ int checkForWordValidity(Word* word, char board[4][4]) {
 	if (!in_dictionary) {
 		return -((length - 2) * (length - 2));
 	}
+
 	return (length - 2) * (length - 2);
 }
 
