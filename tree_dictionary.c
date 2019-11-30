@@ -66,9 +66,9 @@ int main(int argc, char* argv[]){
 
   //scans in our dicitonary and adds all of the letters from words into our tree
   make_tree(argv[1], &root);
-  print_list(root); printf("\n");
-  print_list(root->children); printf("\n");
-  print_list(root->children->children); printf("\n");
+  //print_list(root); printf("\n");
+  //print_list(root->children); printf("\n");
+  //print_list(root->children->children); printf("\n");
 
   //tree_t *temp = root->children->children->children;
   //print_list(root->children->children->children); printf("\n");
@@ -86,33 +86,21 @@ int main(int argc, char* argv[]){
 
 
 
-  if(word_check(&root, "HELLO")){
-    printf("WOOOOO\n");
-  }else{
-    printf("hello word not found\n");
-  }
-
-  if(word_check(&root, "AALII")){
-    printf("WOOOOO\n");
-  }else{
-    printf("stuffword not found\n");
-  }
-
   tree_t *temp = (root)->children;
 
-  while(temp->letter != 'H'){
+  while(temp->letter != 'A'){
     temp = temp->next;
   }
   temp = temp->children;
-  while(temp->letter != 'E'){
+  while(temp->letter != 'U'){
     temp = temp->next;
   }
   temp = temp->children;
-  while(temp->letter != 'L'){
+  while(temp->letter != 'T'){
     temp = temp->next;
   }
   temp = temp->children;
-  while(temp->letter != 'L'){
+  while(temp->letter != 'O'){
     temp = temp->next;
   }
   temp = temp->children;
@@ -260,7 +248,10 @@ void add_children(tree_t**node, char word[],int max_index, int index){
 
 
 
+/*
 
+
+OLD ADD NODE
 //adds a letter to a linked list
 void addNode(tree_t*parent, char new_letter, int is_word){
   //create my node and load it with dat
@@ -305,7 +296,67 @@ void addNode(tree_t*parent, char new_letter, int is_word){
   //adds our new node to our list
   current_node->next = new_child;
 }
+*/
 
+
+
+
+//adds a letter to a linked list in order
+void addNode(tree_t*parent, char new_letter, int is_word){
+  //create my node and load it with dat
+  tree_t*new_child = create_node(new_letter, parent, is_word);
+
+  //adding our first child
+  if(parent->children == NULL){
+    parent->children = new_child;
+    return;
+  }
+
+  tree_t*current_node = parent->children;
+  //scroll to the end of the list
+  while((current_node->next != NULL) && (new_letter > current_node->next->letter)){
+    current_node = current_node->next;
+  }
+
+  //checks for duplicates in the node after
+  if((current_node->next != NULL) && (new_letter == current_node->next->letter)){
+    if(current_node->next->is_word < is_word){
+      current_node->next->is_word = is_word;
+    }
+    free(new_child);
+    return;
+  }
+  //checks for duplicates in the current node if we are adding to end
+  else if(new_letter == current_node->letter){
+    //IF we are not going to add this duplicate but the flag is true for antoher word, we take the true flag
+    if(current_node->is_word < is_word){
+      current_node->is_word = is_word;
+    }
+
+    free(new_child);
+    return;
+  }
+
+
+  //adding to a list with only 1 child
+  if(current_node == parent->children){
+    //checks if the new node should be inront of root node
+    if(new_letter < current_node->letter){
+      new_child->next = current_node;
+      parent->children = new_child;
+    }
+    //if(new_letter > current_node->letter)
+    else{
+      new_child->next = current_node->next;
+      current_node->next = new_child;
+    }
+  }
+  //inserting into the list
+  else{
+    new_child->next = current_node->next;
+    current_node->next = new_child;
+  }
+}
 
 /* --------------------------- */
 //recursive way of printing the tree, prints a node, than calls funciton again with the next node and children node

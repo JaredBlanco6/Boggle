@@ -80,8 +80,8 @@ tree_t* create_node(char letter, tree_t *parent, int is_word){
   return new_child;
 }
 
-/* ------------------------------- */
-//adds a letter to a linked list
+/* ------------------------------ */
+//adds a letter to a linked list in order
 void addNode(tree_t*parent, char new_letter, int is_word){
   //create my node and load it with dat
   tree_t*new_child = create_node(new_letter, parent, is_word);
@@ -93,38 +93,51 @@ void addNode(tree_t*parent, char new_letter, int is_word){
   }
 
   tree_t*current_node = parent->children;
-
-
   //scroll to the end of the list
-  while(current_node->next != NULL){
-
-    //if the letter is already in the list, we don't add the node;
-    if(current_node->letter == new_letter){
-      //IF we are not going to add this duplicate but the flag is true for antoher word, we take the true flag
-      if(current_node->is_word == 0){
-        current_node->is_word = is_word; //printf("Flipping flag\n");
-      }
-      free(new_child);
-      return;
-    }
-
+  while((current_node->next != NULL) && (new_letter > current_node->next->letter)){
     current_node = current_node->next;
   }
 
-
-  //ensuring no duplicates
-  if(current_node->letter == new_letter){
-    if(current_node->is_word < is_word){
-      current_node->is_word = is_word; //printf("flipping flag %c\n", current_node->letter);
+  //checks for duplicates in the node after
+  if((current_node->next != NULL) && (new_letter == current_node->next->letter)){
+    if(current_node->next->is_word < is_word){
+      current_node->next->is_word = is_word;
     }
+    free(new_child);
+    return;
+  }
+  //checks for duplicates in the current node if we are adding to end
+  else if(new_letter == current_node->letter){
+    //IF we are not going to add this duplicate but the flag is true for antoher word, we take the true flag
+    if(current_node->is_word < is_word){
+      current_node->is_word = is_word;
+    }
+
     free(new_child);
     return;
   }
 
 
-  //adds our new node to our list
-  current_node->next = new_child;
+  //adding to a list with only 1 child
+  if(current_node == parent->children){
+    //checks if the new node should be inront of root node
+    if(new_letter < current_node->letter){
+      new_child->next = current_node;
+      parent->children = new_child;
+    }
+    //if(new_letter > current_node->letter)
+    else{
+      new_child->next = current_node->next;
+      current_node->next = new_child;
+    }
+  }
+  //inserting into the list
+  else{
+    new_child->next = current_node->next;
+    current_node->next = new_child;
+  }
 }
+
 
 /* ------------------------------ */
 //looks for a parent and gives them their kid.
