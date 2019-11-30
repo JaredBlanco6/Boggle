@@ -38,8 +38,8 @@ typedef struct tree_t{
   //each node has a little that will form a word
   char letter;
   //flag that all the letters make a word, still use 0 and 1
-  char is_word;
-  //a single pointer to my parent node
+  bool is_word;
+  //a single poshorter to my parent node
   struct tree_t* parent;
   //pointer to a list of children
   struct tree_t* children;
@@ -50,17 +50,17 @@ typedef struct tree_t{
 bool isFull(WordList);
 void insertWord(link_word *, WordList *);
 Word createNode(char *, link_word *);
-void upHeap(int, WordList *);
+void upHeap(short, WordList *);
 void downHeap(WordList *);
-int getParent(int );
-int leftChildren(int);
-int rightChildren(int);
-void upHeap(int, WordList*);
-int getLength(int, WordList);
+short getParent(short );
+short leftChildren(short);
+short rightChildren(short);
+void upHeap(short, WordList*);
+short getLength(short, WordList);
 void swapMin(char [], WordList *, link_word *);
-int getSize(link_word *);
-void swap(int, int, WordList *);
-void getString(char [], int,link_word *);
+short getSize(link_word *);
+void swap(short, short, WordList *);
+void getString(char [], short,link_word *);
 
 
 
@@ -69,7 +69,7 @@ void getString(char [], int,link_word *);
 /* ------------------------------ */
 
 //allocates memory for a new node, fills it with given data, and sets everything else to NULL;
-tree_t* create_node(char letter, tree_t *parent, int is_word){
+tree_t* create_node(char letter, tree_t *parent, short is_word){
   tree_t*new_child = (tree_t*)malloc(sizeof(tree_t));
   new_child->parent = parent;
   new_child->children = NULL;
@@ -82,7 +82,7 @@ tree_t* create_node(char letter, tree_t *parent, int is_word){
 
 /* ------------------------------ */
 //adds a letter to a linked list in order
-void addNode(tree_t*parent, char new_letter, int is_word){
+void addNode(tree_t*parent, char new_letter, short is_word){
   //create my node and load it with dat
   tree_t*new_child = create_node(new_letter, parent, is_word);
 
@@ -142,14 +142,14 @@ void addNode(tree_t*parent, char new_letter, int is_word){
 /* ------------------------------ */
 //looks for a parent and gives them their kid.
 //the parent is the first letter, the child is the second letter
-void add_children(tree_t**node, char word[],int max_index, int index){
+void add_children(tree_t**node, char word[],short max_index, short index){
   //error case
   if( (*node) == NULL){
     return;
   }
 
 
-  //if we reach the point in the word where we would just add a null char to the list
+  //if we reach the poshortin the word where we would just add a null char to the list
   if((index + 1 > max_index) || (word[index + 1] == '\0')){
     return;
   }
@@ -208,7 +208,7 @@ void decalre_root(tree_t **root){
   short word_size = 2;
 
   //makes a base tree of the alphabet
-  for(int i = 'A'; i <= 'Z'; i++){
+  for(short i = 'A'; i <= 'Z'; i++){
     word[1] = i;
     add_children(&(*root), word, word_size, 0);
   }
@@ -254,10 +254,10 @@ Word createNode(char word[], link_word *head){
     Word entry;
     strcpy(entry.word, word);
     entry.path_length = strlen(word);
-    int size = entry.path_length;
+    short size = entry.path_length;
     link_word *temp = head;
 
-      for(int i =size-1;i>=-0;i--){
+      for(short i =size-1;i>=-0;i--){
           if(temp !=NULL){
             entry.path[i].row = temp->x;
             entry.path[i].column = temp->y;
@@ -274,9 +274,9 @@ Word createNode(char word[], link_word *head){
 }
 
 //Returns the size of the word by looping through the linked list
-int getSize(link_word *head){
+short getSize(link_word *head){
   link_word *temp = head;
-    int length = 0;
+    short length = 0;
     while(temp != NULL){
         temp = temp->next;
         length++;
@@ -286,10 +286,10 @@ int getSize(link_word *head){
 }
 
 //Creates a string by attaching the characters of the linked list
-void getString(char word[], int length, link_word *head){
+void getString(char word[], short length, link_word *head){
 
     link_word *temp = head;
-    for(int i = length -1; i>=0; i--){
+    for(short i = length -1; i>=0; i--){
         word[i] = temp->letter;
 
         temp = temp->next;
@@ -303,13 +303,13 @@ void getString(char word[], int length, link_word *head){
 void insertWord(link_word *head , WordList *minHeap){
     //printf("inside fun ");
     //Calls getSize and it assigns it to the size of the word
-    int size = getSize(head);
+    short size = getSize(head);
     char word[size];
     //calls the function to get the word from the linked list
     getString(word, size, head);
     // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
-        int index = (minHeap)->length;
+        short index = (minHeap)->length;
         //the new word is inserted in the heap in the correct position
         (minHeap)->wordlist[index] = createNode(word, head);
         //the new position is updated by addidng one value
@@ -332,10 +332,10 @@ void insertWord(link_word *head , WordList *minHeap){
 }
 
 //
-void upHeap(int index, WordList *minHeap){
+void upHeap(short index, WordList *minHeap){
     //Calls upheap after inserting the node in the right position
     //It is only called when the heap is not full
-    int parent = getParent(index);
+    short parent = getParent(index);
     //swap if the parent's word length is greater than itself
     while(index>0 && getLength(parent, *minHeap)>getLength(index,*minHeap)){
         //Calls the swap function which swaps the information at the two indexes
@@ -350,8 +350,8 @@ void upHeap(int index, WordList *minHeap){
 
 void downHeap(WordList *minHeap){
     //downHeap will only be called when the array is full. The insertion is always at the root.
-    int index = 0;
-    int size = minHeap->length;
+    short index = 0;
+    short size = minHeap->length;
     //As long as the children is bigger than the parent and the index is lower than the maximum size of the heap
     while(index<size && leftChildren(index)<size){
         //if the length of the left child is smaller than the length of the inserted word then swap nodes
@@ -389,28 +389,28 @@ void swapMin(char word[], WordList *minHeap, link_word *head){
 
 
 //get parent index
-int getParent(int childIndex){
+short getParent(short childIndex){
   return (childIndex - 1) / 2;
 }
 
-int leftChildren(int parentIndex){//get left child index
+short leftChildren(short parentIndex){//get left child index
   return 2 * parentIndex + 1;
 }
 
 
-int rightChildren(int parentIndex){//get right child index. return function
+short rightChildren(short parentIndex){//get right child index. return function
   return 2 * parentIndex + 2;
 }
 
 
-int getLength(int index, WordList minHeap){
+short getLength(short index, WordList minHeap){
 
-    int length = minHeap.wordlist[index].path_length;//It stores the length of the word in the heap at the right index
+    short length = minHeap.wordlist[index].path_length;//It stores the length of the word in the heap at the right index
     return length;//returns the length of the word
 }
 
 
-void swap(int index1, int index2, WordList *minHeap){
+void swap(short index1, short index2, WordList *minHeap){
 
     Word temp = minHeap->wordlist[index1];
     minHeap->wordlist[index1] = minHeap->wordlist[index2];
@@ -477,7 +477,7 @@ void pop_letter(link_word **word){
 
 //TRASH BEGING
 void print_link_word(link_word **word){
-  int counter = 0;
+  short counter = 0;
   link_word *curr_node = *word;
 
   while(curr_node != NULL){
@@ -490,7 +490,7 @@ void print_link_word(link_word **word){
 
   curr_node = *word;
 
-  for (int i = counter-1; i > -1; i--) {
+  for (short i = counter-1; i > -1; i--) {
     word_c[i] = curr_node->letter;
     curr_node = curr_node->next;
   }
@@ -678,8 +678,8 @@ WordList* getWords(char board[4][4]) {
 
   // 	Generating and printing the map
 	MAP bogglemap[4][4];
-	for(int i = 0; i < 4; i++){
-		for(int j = 0; j<4; j++){
+	for(short i = 0; i < 4; i++){
+		for(short j = 0; j<4; j++){
 			bogglemap[i][j].value = board[i][j];
 			bogglemap[i][j].visited = false;
 			printf("%c ", bogglemap[i][j].value);
@@ -689,8 +689,8 @@ WordList* getWords(char board[4][4]) {
 
 
   //calls dfs & reset linked list for each location in the graph
-	for (int i = 0; i < 4; i++){
-		for(int j = 0; j < 4; j++){
+	for (short i = 0; i < 4; i++){
+		for(short j = 0; j < 4; j++){
       word = NULL;
 			DFS(i,j, bogglemap, &dictionary_tree, letter_location, &myWords, &word);
 		}
@@ -701,10 +701,10 @@ WordList* getWords(char board[4][4]) {
 /*
   //OUR PATH IS BACKWARDS!!!!! WE WILL FIX THIS
   //loops through all words
-  for(int i = 0; i < myWords.length; i++){
+  for(short i = 0; i < myWords.length; i++){
 
     //looks through each words path
-    for(int z = 0; z < myWords.wordlist[i].path_length/2; z++){
+    for(short z = 0; z < myWords.wordlist[i].path_length/2; z++){
 
 
       temp.row = myWords.wordlist[i].path[z].row;
@@ -722,12 +722,12 @@ WordList* getWords(char board[4][4]) {
 
   printf("length %d\n", myWords.length);
   printf("PRINTING WORDS\n");
-  for(int i = 0; i < 20; i++){
+  for(short i = 0; i < 20; i++){
 
     printf("%s %d ", myWords.wordlist[i].word, myWords.wordlist[i].path_length);
 
     printf("path: ");
-    for(int z = 0; z < myWords.wordlist[i].path_length; z++){
+    for(short z = 0; z < myWords.wordlist[i].path_length; z++){
       printf("(%d,%d) ", myWords.wordlist[i].path[z].row, myWords.wordlist[i].path[z].column);
     }
     printf("\n");
