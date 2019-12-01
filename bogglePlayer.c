@@ -684,9 +684,10 @@ void initBogglePlayer(char* word_file) {
     	printf("%c", letter_location->letter);
     }
     letter_location = search_letter(dictionary_tree->children, 'T');
-    if (letter_location != NULL)
+    while (letter_location != NULL)
     {
     	printf("%c %d", letter_location->letter, letter_location->is_word);
+      letter_location = letter_location->next;
     }
     printf("\n");
 
