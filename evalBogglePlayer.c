@@ -125,16 +125,21 @@ int main (int argc, char* argv[]) {
         // Calculate the used memory
     long memory = getPeakMemory();
 
-    double totalElapsedTime = (double)(endTime - startTime);
+    clock_t elapsedTime = endTime - startTime;
 
-    if (totalElapsedTime <= 0) // too small to measure, unlikely
-       totalElapsedTime = 1;
+    if (elapsedTime == 0) // too small to measure, unlikely
+       elapsedTime = 1;
+    else if (elapsedTime < 0)
+      {
+        printf("**negative elapsed time: %ld clock ticks, the clock has wrapped around, performance cannot be calculated**\n", elapsedTime);
+        exit(-1);
+      }
     if (memory <= 0) // too small to measure, highly unlikely
        memory = 1;
 
     // Convert elapsed time into seconds, and calculate the average time
-    totalElapsedTime = totalElapsedTime / CLOCKS_PER_SEC;
-    if (totalElapsedTime > 180) {  // longer than 3 minutes
+    double elapsedTimeSec = ((double)elapsedTime) / CLOCKS_PER_SEC;
+    if (elapsedTimeSec > 180) {  // longer than 3 minutes
         printf("*** getWords() exceeded 3 minutes ***\n");
         exit(-1);
     }
@@ -144,10 +149,10 @@ int main (int argc, char* argv[]) {
 
     // Output performance metrics
     printf("Points: %d\n", total_points);
-    printf("Time in seconds: %.4e\n", totalElapsedTime);
+    printf("Time in seconds: %.4e\n", elapsedTimeSec);
     printf("Used memory in bytes: %ld\n", memory);
     printf("Overall performance: %.4lf\n",
-               (total_points * total_points) / sqrt(totalElapsedTime * memory));
+               (total_points * total_points) / sqrt(elapsedTimeSec * memory));
 }
 
 // call initBogglePlayer in bogglePlayer
