@@ -489,15 +489,24 @@ void print_link_word(link_word **word){
   }
 
   char word_c[counter+1];
+  int path[2][counter+1];
   word_c[counter] = '\0';
 
   curr_node = *word;
 
   for (short i = counter-1; i > -1; i--) {
+  	path[0][i] = curr_node->x;
+  	path[1][i] = curr_node->y;
     word_c[i] = curr_node->letter;
     curr_node = curr_node->next;
   }
-  printf("%s\n", word_c);
+  printf("Word Found:\n");
+  printf("%s %d ", word_c, counter);
+  for (int i = 0; i < counter; ++i)
+  {
+  	printf("(%d, %d), ", path[0][i], path[1][i]);
+  }
+  printf("\n\n\n");
 }
 //TRASG ENDS
 
@@ -506,14 +515,14 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
 // MAP boggle[4][4] to be passed in
 // Wordlist heapword to be passed in
 
-
   //saves the position of the letter, the function returns -1 if the letter wasn't found
   letter_location = search_letter((*dictionary)->children, boggle[pos_x][pos_y].value);
 
   //add to the link_word
   push_letter(&(*word), pos_x, pos_y, boggle[pos_x][pos_y].value);
 
-
+  //sets the letter in the map as already visited
+  boggle[pos_x][pos_y].visited = true;
 
   //if the letter was found continue with the DFS
   if (letter_location != NULL){
@@ -529,10 +538,10 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
       letter_location->is_word = false;
       //printf("Word found ");
       //print_link_word(&(*word));
-    }
 
-    //sets the letter in the map as already visited
-    boggle[pos_x][pos_y].visited = true;
+      //print_link_word(&(*word));
+
+    }
 
     //checks if the upper position was visited
     if (pos_x-1 > -1 && boggle[pos_x-1][pos_y].visited == false){
@@ -606,7 +615,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     }
     //Checks if the upper left diagonial position was visited
     if (pos_x-1 > -1 && pos_y+1 < 4 && boggle[pos_x-1][pos_y+1].visited == false){
-      DFS(pos_x-1, pos_y-1, boggle, &(letter_location), NULL, Heap_word, &(*word));
+      DFS(pos_x-1, pos_y+1, boggle, &(letter_location), NULL, Heap_word, &(*word));
 
       //pop a letter from link word
       pop_letter(&(*word));
@@ -615,10 +624,11 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
       boggle[pos_x-1][pos_y+1].visited = false;
     }
 
-    //sets the letter in the map as not visited
-    boggle[pos_x][pos_y].visited = false;
+    
   }
 
+  //sets the letter in the map as not visited
+  boggle[pos_x][pos_y].visited = false;
 }
 
 
@@ -636,14 +646,14 @@ tree_t *dictionary_tree = NULL;
 
 
 void initBogglePlayer(char* word_file) {
-  /*
+  
   //fills first layer of letter
   decalre_root(&dictionary_tree);
 
   //scans in our dicitonary and adds all of the letters from words into our tree
   make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
 
-  */
+  
   //free's our tree
   //freeList(&(dictionary_tree));
 }
@@ -675,12 +685,11 @@ WordList* getWords(char board[4][4]) {
 
 	// Heap called myWords
 	static WordList myWords;
-  /*
+  
 
 
   //	Word pointer for generatiing the word stack in the DFS
 	link_word *word = NULL;
-
 
   // 	Generating and printing the map
 	MAP bogglemap[4][4];
@@ -703,7 +712,41 @@ WordList* getWords(char board[4][4]) {
 	}
 
   Location temp;
-
+  //Checking if BEHEST is a word in the trie
+  /*
+  letter_location = search_letter(dictionary_tree->children, 'B');
+  if (letter_location != NULL)
+  {
+  	printf("%c", letter_location->letter);
+  }
+  letter_location = search_letter(dictionary_tree->children, 'E');
+  if (letter_location != NULL)
+  {
+  	printf("%c", letter_location->letter);
+  }
+  letter_location = search_letter(dictionary_tree->children, 'H');
+  if (letter_location != NULL)
+  {
+  	printf("%c", letter_location->letter);
+  }
+  letter_location = search_letter(dictionary_tree->children, 'E');
+  if (letter_location != NULL)
+  {
+  	printf("%c", letter_location->letter);
+  }
+  letter_location = search_letter(dictionary_tree->children, 'S');
+  if (letter_location != NULL)
+  {
+  	printf("%c", letter_location->letter);
+  }
+  letter_location = search_letter(dictionary_tree->children, 'T');
+  if (letter_location != NULL)
+  {
+  	printf("%c %d", letter_location->letter, letter_location->is_word);
+  }
+  printf("\n");
+  */
+  //BEHEST is not a word
 
   printf("length %d\n", myWords.length);
   printf("PRINTING WORDS\n");
@@ -718,7 +761,6 @@ WordList* getWords(char board[4][4]) {
     printf("\n");
   }
 
-  */
 
   //freeList(&(dictionary_tree));
   return &myWords;
