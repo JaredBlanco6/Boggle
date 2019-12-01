@@ -636,14 +636,14 @@ tree_t *dictionary_tree = NULL;
 
 
 void initBogglePlayer(char* word_file) {
-  /*
+
   //fills first layer of letter
   decalre_root(&dictionary_tree);
 
   //scans in our dicitonary and adds all of the letters from words into our tree
   make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
 
-  */
+
   //free's our tree
   //freeList(&(dictionary_tree));
 }
@@ -675,7 +675,7 @@ WordList* getWords(char board[4][4]) {
 
 	// Heap called myWords
 	static WordList myWords;
-  /*
+
 
 
   //	Word pointer for generatiing the word stack in the DFS
@@ -704,7 +704,7 @@ WordList* getWords(char board[4][4]) {
 
   Location temp;
 
-
+  
   printf("length %d\n", myWords.length);
   printf("PRINTING WORDS\n");
   for(short i = 0; i < 20; i++){
@@ -718,7 +718,7 @@ WordList* getWords(char board[4][4]) {
     printf("\n");
   }
 
-  */
+
 
   //freeList(&(dictionary_tree));
   return &myWords;
