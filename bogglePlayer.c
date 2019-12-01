@@ -654,6 +654,42 @@ void initBogglePlayer(char* word_file) {
   make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
 
 
+    tree_t *letter_location = NULL;
+    Location temp;
+    //Checking if BEHEST is a word in the trie
+
+    letter_location = search_letter(dictionary_tree->children, 'B');
+    if (letter_location != NULL)
+    {
+    	printf("%c", letter_location->letter);
+    }
+    letter_location = search_letter(dictionary_tree->children, 'E');
+    if (letter_location != NULL)
+    {
+    	printf("%c", letter_location->letter);
+    }
+    letter_location = search_letter(dictionary_tree->children, 'H');
+    if (letter_location != NULL)
+    {
+    	printf("%c", letter_location->letter);
+    }
+    letter_location = search_letter(dictionary_tree->children, 'E');
+    if (letter_location != NULL)
+    {
+    	printf("%c", letter_location->letter);
+    }
+    letter_location = search_letter(dictionary_tree->children, 'S');
+    if (letter_location != NULL)
+    {
+    	printf("%c", letter_location->letter);
+    }
+    letter_location = search_letter(dictionary_tree->children, 'T');
+    if (letter_location != NULL)
+    {
+    	printf("%c %d", letter_location->letter, letter_location->is_word);
+    }
+    printf("\n");
+
   //free's our tree
   //freeList(&(dictionary_tree));
 }
@@ -745,7 +781,7 @@ WordList* getWords(char board[4][4]) {
   	printf("%c %d", letter_location->letter, letter_location->is_word);
   }
   printf("\n");
-  
+
   //BEHEST is not a word
 
   printf("length %d\n", myWords.length);
