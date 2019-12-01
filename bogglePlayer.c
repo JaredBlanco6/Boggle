@@ -636,13 +636,14 @@ tree_t *dictionary_tree = NULL;
 
 
 void initBogglePlayer(char* word_file) {
-
+  /*
   //fills first layer of letter
   decalre_root(&dictionary_tree);
 
   //scans in our dicitonary and adds all of the letters from words into our tree
   make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
 
+  */
   //free's our tree
   //freeList(&(dictionary_tree));
 }
@@ -718,7 +719,7 @@ WordList* getWords(char board[4][4]) {
   }
 
   */
-  
+
   //freeList(&(dictionary_tree));
   return &myWords;
 }
