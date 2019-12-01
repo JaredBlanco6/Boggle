@@ -713,7 +713,7 @@ WordList* getWords(char board[4][4]) {
 
   Location temp;
   //Checking if BEHEST is a word in the trie
-  /*
+
   letter_location = search_letter(dictionary_tree->children, 'B');
   if (letter_location != NULL)
   {
@@ -745,7 +745,7 @@ WordList* getWords(char board[4][4]) {
   	printf("%c %d", letter_location->letter, letter_location->is_word);
   }
   printf("\n");
-  */
+  
   //BEHEST is not a word
 
   printf("length %d\n", myWords.length);
