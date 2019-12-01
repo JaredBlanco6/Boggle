@@ -636,7 +636,7 @@ tree_t *dictionary_tree = NULL;
 
 
 void initBogglePlayer(char* word_file) {
-  
+
   //fills first layer of letter
   decalre_root(&dictionary_tree);
 
@@ -667,12 +667,14 @@ void  sampleWordList(WordList* myWords);   // a sample function to populate a wo
 
 
 WordList* getWords(char board[4][4]) {
+
   // letter location in the tree
 	tree_t *letter_location = NULL;
 
 
 	// Heap called myWords
 	static WordList myWords;
+  /*
 
 
   //	Word pointer for generatiing the word stack in the DFS
@@ -715,7 +717,8 @@ WordList* getWords(char board[4][4]) {
     printf("\n");
   }
 
-
+  */
+  
   //freeList(&(dictionary_tree));
   return &myWords;
 }
