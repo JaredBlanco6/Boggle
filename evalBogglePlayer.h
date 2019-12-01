@@ -24,7 +24,7 @@
    WINDOWS:
    gcc -o evalBogglePlayer evalBogglePlayer.c bogglePlayer.c word.c -lm -lpsapi
 
-   or
+   or 
 
    gcc -o evalBogglePlayer *.c -lm -lpsapi
 */
