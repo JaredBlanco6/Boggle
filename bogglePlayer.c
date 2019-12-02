@@ -255,7 +255,7 @@ bool isFull(WordList minHeap){
 //Creates a node of type Word and returns it
 Word createNode(char word[], link_word *head){
     Word entry;
-    //It copies the passed string to the string in the struct 
+    //It copies the passed string to the string in the struct
     strcpy(entry.word, word);
     //It copies the string length using strlen
     entry.path_length = strlen(word);
@@ -286,7 +286,7 @@ short getSize(link_word *head){
         temp = temp->next;
         length++;
     }
-    
+
 
     return length;
 }
@@ -314,15 +314,15 @@ void insertWord(link_word *head , WordList *minHeap){
     getString(word, size, head);
     // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
-        
+
         int index = (minHeap)->length;
-      
+
         //the new word is inserted in the heap in the correct position
         (minHeap)->wordlist[index] = createNode(word, head);
         //the new position is updated by addidng one value
         (minHeap)->length= index +1;
         //printf("Index = %d\n", index);
-        
+
         //After the new word is inserted upHeap function is called to sort the heap
         upHeap(index, (minHeap));
     }
@@ -543,6 +543,11 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
 
   //add to the link_word
   push_letter(&(*word), pos_x, pos_y, boggle[pos_x][pos_y].value);
+
+  //move the position of the letter location
+  if (letter_location->letter == 'Q'){
+    letter_location = letter_location->children;
+  }
 
   //sets the letter in the map as already visited
   boggle[pos_x][pos_y].visited = true;
