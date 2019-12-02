@@ -473,11 +473,11 @@ void push_letter(link_word **word, short x, short y, char value){
     *word = new_node;
 
     //if the letter was a Q then add a U to the word linked list
-    if (value == 'Q'){
+    /*if (value == 'Q'){
       link_word *new_node_2 = initialized_link_word(x, y, 'U');
       new_node_2->next = *word;
       *word = new_node_2;
-    }
+    }*/
 }
 
 
@@ -488,13 +488,13 @@ void pop_letter(link_word **word){
     link_word *curr_node = *word;
     *word = (*word)->next;
     //if the letter was a U then check the next letter because it could be a Q
-    if (curr_node->letter == 'U'){
+    /*if (curr_node->letter == 'U'){
     	link_word *curr_node_2 = curr_node->next;
     	//if the letter is a Q remove it from the word linked list
     	if (curr_node_2 != NULL && curr_node_2->letter == 'Q'){
     		free(curr_node_2);
     	}
-    }
+    }*/
     free(curr_node);
   }
 }
