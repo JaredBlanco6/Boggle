@@ -544,16 +544,16 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
   //add to the link_word
   push_letter(&(*word), pos_x, pos_y, boggle[pos_x][pos_y].value);
 
-  //move the position of the letter location
-  if (letter_location->letter == 'Q'){
-    letter_location = letter_location->children;
-  }
-
   //sets the letter in the map as already visited
   boggle[pos_x][pos_y].visited = true;
 
   //if the letter was found continue with the DFS
   if (letter_location != NULL){
+
+    //move the position of the letter location
+    if (letter_location->letter == 'Q'){
+      letter_location = letter_location->children;
+    }
 
     //if this is a word (1 for word) then save it in the array
     if (letter_location->is_word == true){
