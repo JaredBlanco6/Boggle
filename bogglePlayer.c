@@ -488,13 +488,14 @@ void pop_letter(link_word **word){
     link_word *curr_node = *word;
     *word = (*word)->next;
     //if the letter was a U then check the next letter because it could be a Q
-    /*if (curr_node->letter == 'U'){
-    	link_word *curr_node_2 = curr_node->next;
+    if (curr_node->letter == 'U'){
+    	link_word *curr_node_2 = *word;
     	//if the letter is a Q remove it from the word linked list
     	if (curr_node_2 != NULL && curr_node_2->letter == 'Q'){
+        *word = (*word)->next;
     		free(curr_node_2);
     	}
-    }*/
+    }
     free(curr_node);
   }
 }
