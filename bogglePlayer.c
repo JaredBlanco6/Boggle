@@ -252,10 +252,12 @@ bool isFull(WordList minHeap){
 }
 
 
-//Creates a node of type NODE and returns it
+//Creates a node of type Word and returns it
 Word createNode(char word[], link_word *head){
     Word entry;
+    //It copies the passed string to the string in the struct 
     strcpy(entry.word, word);
+    //It copies the string length using strlen
     entry.path_length = strlen(word);
     short size = entry.path_length;
     link_word *temp = head;
@@ -284,6 +286,7 @@ short getSize(link_word *head){
         temp = temp->next;
         length++;
     }
+    printf("Length returned from get Size : %d\n", length); 
 
     return length;
 }
@@ -312,6 +315,7 @@ void insertWord(link_word *head , WordList *minHeap){
     getString(word, size, head);
     // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
+        printf("IS NOT FULL\n");
         short index = (minHeap)->length;
         //the new word is inserted in the heap in the correct position
         (minHeap)->wordlist[index] = createNode(word, head);
@@ -779,7 +783,7 @@ WordList* getWords(char board[4][4]) {
 
   printf("length %d\n", myWords.length);
   printf("PRINTING WORDS\n");
-  for(short i = 0; i < 20; i++){
+  for(short i = 0; i < myWords.length; i++){
 
     printf("%s %d ", myWords.wordlist[i].word, myWords.wordlist[i].path_length);
 
