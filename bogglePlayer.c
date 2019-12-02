@@ -286,7 +286,7 @@ short getSize(link_word *head){
         temp = temp->next;
         length++;
     }
-    printf("Length returned from get Size : %d\n", length); 
+    
 
     return length;
 }
@@ -307,20 +307,22 @@ void getString(char word[], short length, link_word *head){
 
 //this function is called in the DFS everytime we found a valid word
 void insertWord(link_word *head , WordList *minHeap){
-    //printf("inside fun ");
     //Calls getSize and it assigns it to the size of the word
-    short size = getSize(head);
+    int size = getSize(head);
     char word[size];
     //calls the function to get the word from the linked list
     getString(word, size, head);
     // for insertion first checks if the heap is full
     if(isFull(*minHeap)==false){
-        printf("IS NOT FULL\n");
-        short index = (minHeap)->length;
+        
+        int index = (minHeap)->length;
+      
         //the new word is inserted in the heap in the correct position
         (minHeap)->wordlist[index] = createNode(word, head);
         //the new position is updated by addidng one value
-        (minHeap)->length = index +1;
+        (minHeap)->length= index +1;
+        //printf("Index = %d\n", index);
+        
         //After the new word is inserted upHeap function is called to sort the heap
         upHeap(index, (minHeap));
     }
@@ -342,7 +344,7 @@ void insertWord(link_word *head , WordList *minHeap){
 void upHeap(short index, WordList *minHeap){
     //Calls upheap after inserting the node in the right position
     //It is only called when the heap is not full
-    short parent = getParent(index);
+    int parent = getParent(index);
     //swap if the parent's word length is greater than itself
     while(index>0 && getLength(parent, *minHeap)>getLength(index,*minHeap)){
         //Calls the swap function which swaps the information at the two indexes
@@ -357,10 +359,10 @@ void upHeap(short index, WordList *minHeap){
 
 void downHeap(WordList *minHeap){
     //downHeap will only be called when the array is full. The insertion is always at the root.
-    short index = 0;
-    short size = minHeap->length;
+    int index = 0;
+    int size = minHeap->length;
     //As long as the children is bigger than the parent and the index is lower than the maximum size of the heap
-    while(index<size && leftChildren(index)<size){
+    while(leftChildren(index)<(size-1)){
         //if the length of the left child is smaller than the length of the inserted word then swap nodes
         if(getLength(index,*minHeap)>getLength(leftChildren(index),*minHeap)){
             //swaps with the left children
@@ -784,7 +786,6 @@ WordList* getWords(char board[4][4]) {
   printf("length %d\n", myWords.length);
   printf("PRINTING WORDS\n");
   for(short i = 0; i < myWords.length; i++){
-
     printf("%s %d ", myWords.wordlist[i].word, myWords.wordlist[i].path_length);
 
     printf("path: ");
