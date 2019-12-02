@@ -555,7 +555,7 @@ void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t
     if (letter_location->letter == 'Q'){
       letter_location = letter_location->children;
       push_letter(&(*word), pos_x, pos_y, 'U');
-      print_link_word(&(*word));
+      //print_link_word(&(*word));
     }
 
     //if this is a word (1 for word) then save it in the array
