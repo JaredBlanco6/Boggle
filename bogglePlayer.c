@@ -434,39 +434,48 @@ void swap(short index1, short index2, WordList *minHeap){
 /* ------------------------------ */
 /* ------------------------------ */
 link_word* initialized_link_word(short x, short y, char value){
+  //creates a dynamic memory allocation
   link_word *new_node = (link_word*)malloc(sizeof(link_word));
+
+  //initializes the node with the given values
   new_node->x = x;
   new_node->y = y;
   new_node->letter = value;
   new_node->next = NULL;
+
+  //returns the node
   return new_node;
 }
 
 tree_t* search_letter(tree_t *dictionary, char value){
+  //if the dicitionary is NULL then the letter is garbage(return NULL)
   if (dictionary == NULL){
     return NULL;
   }
 
-
+  //search all the letters at a certain height in the trie, if the letter was found then return the pointer
   while(dictionary != NULL){
     if (dictionary->letter == value){
       return dictionary;
     }
+    //changes position in the same level
     dictionary = dictionary->next;
   }
-
+  //if it gets here then the letter is garbage
   return NULL;
 }
 
 /* ------------------------------ */
 void push_letter(link_word **word, short x, short y, char value){
+    //initializes the node for the word linked list
     link_word *new_node = initialized_link_word(x, y, value);
     new_node->next = *word;
     *word = new_node;
-    //printf("letters %c\n", new_node->letter);
+
+    //if the letter was a Q then add a U to the word linked list
     if (value == 'Q'){
       link_word *new_node_2 = initialized_link_word(x, y, 'U');
-      new_node_2 = *word;
+      new_node_2->next = *word;
       *word = new_node_2;
     }
 }
@@ -474,17 +483,25 @@ void push_letter(link_word **word, short x, short y, char value){
 
 /* ------------------------------ */
 void pop_letter(link_word **word){
+  //if there's a letter in the word linked list remove
   if(*word != NULL){
     link_word *curr_node = *word;
     *word = (*word)->next;
-    //printf("removing %c\n", curr_node->letter);
+    //if the letter was a U then check the next letter because it could be a Q
+    if (curr_node->letter == 'U'){
+    	link_word *curr_node_2 = curr_node->next;
+    	//if the letter is a Q remove it from the word linked list
+    	if (curr_node_2 != NULL && curr_node_2->letter == 'Q'){
+    		free(curr_node_2);
+    	}
+    }
     free(curr_node);
   }
 }
 
 /* ------------------------------ */
 
-//TRASH BEGING
+//TRASH CODE BEGINS
 void print_link_word(link_word **word){
   short counter = 0;
   link_word *curr_node = *word;
@@ -514,7 +531,7 @@ void print_link_word(link_word **word){
   }
   printf("\n\n\n");
 }
-//TRASG ENDS
+//TRASH CODE ENDS
 
 //the dfs function should be call in another function since the initial position should be changed
 void DFS(short pos_x, short pos_y, MAP boggle[4][4], tree_t **dictionary, tree_t *letter_location, WordList *Heap_word, link_word **word){
