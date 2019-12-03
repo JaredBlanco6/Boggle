@@ -1,13 +1,30 @@
 /*
 
-  Authors (group members):
-  Email addresses of group members:
-  Group name:
+  Authors (group members): Jared Blanco, Anthony Garcia, Kyle Findley, Paloma Vela Achu
+  Email addresses of group members: JBlanco2018@my.fit.edu, anthony2018@my.fit.edu, kfindley2016@my.fit.edu,
+  Group name: ASPJCF (All the Stacked Programer Jared Could Find )
 
   Course:
   Section:
 
   Description of the overall algorithm and main data structures:
+
+    -Build Tri for dicitonary
+      -Our tri is the dicitonary file broken up by char's in a big tree
+
+    -Load the map into our struct with visited flag
+
+    -Run DFS on all 16 positions on the boggle board
+      -starts from a position,
+      -find that letter in the tri,
+      -adds that letter and cordinates to a stack (used to make string),
+      -checks all neighbors,
+        -if(neighbors == child of tri letter){ visit;}
+      -if the checked letter is a word, we add it to a min heap
+
+    -print best found words from min heap
+
+
 
 
 */
@@ -682,7 +699,7 @@ void initBogglePlayer(char* word_file) {
   decalre_root(&dictionary_tree);
 
   //scans in our dicitonary and adds all of the letters from words into our tree
-  make_tree(word_file, &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
+  make_tree("wordshort.txt", &dictionary_tree); //WE CAN MAKE THIS FASTER BY ADDING A TAIL, MAKE CHILDREN IN ORDER TO SPEED UP DFS
 
 
   //free's our tree
@@ -691,38 +708,18 @@ void initBogglePlayer(char* word_file) {
 
 
 
-void  sampleWordList(WordList* myWords);   // a sample function to populate a word list
-
-// based on the board, find valid words
-//
-// board: 4x4 board, each element is a letter, 'Q' represents "QU",
-//    first dimension is row, second dimension is column
-//    ie, board[row][col]
-//
-// Return at most 20 valid words in UPPERCASE and
-//    their paths of locations on the board in myWords
-//
-// See word.h for details of the struct for Word, WordList, Location, and access functions
-
-
-
-
-
 WordList* getWords(char board[4][4]) {
-
   // letter location in the tree
 	tree_t *letter_location = NULL;
-
 
 	// Heap called myWords
 	static WordList myWords;
 
-
-
-  //	Word pointer for generatiing the word stack in the DFS
+  //Word pointer for generatiing the word stack in the DFS
 	link_word *word = NULL;
 
-  // 	Generating and printing the map
+
+  //Generating and printing the map
 	MAP bogglemap[4][4];
 	for(short i = 0; i < 4; i++){
 		for(short j = 0; j<4; j++){
@@ -742,74 +739,10 @@ WordList* getWords(char board[4][4]) {
 		}
 	}
 
-  /*
-  Location temp;
-  //Checking if BEHEST is a word in the trie
 
-  letter_location = search_letter(dictionary_tree->children, 'B');
-  if (letter_location != NULL)
-  {
-  	printf("%c", letter_location->letter);
-  }
-  letter_location = search_letter(dictionary_tree->children, 'E');
-  if (letter_location != NULL)
-  {
-  	printf("%c", letter_location->letter);
-  }
-  letter_location = search_letter(dictionary_tree->children, 'H');
-  if (letter_location != NULL)
-  {
-  	printf("%c", letter_location->letter);
-  }
-  letter_location = search_letter(dictionary_tree->children, 'E');
-  if (letter_location != NULL)
-  {
-  	printf("%c", letter_location->letter);
-  }
-  letter_location = search_letter(dictionary_tree->children, 'S');
-  if (letter_location != NULL)
-  {
-  	printf("%c", letter_location->letter);
-  }
-  letter_location = search_letter(dictionary_tree->children, 'T');
-  if (letter_location != NULL)
-  {
-  	printf("%c %d", letter_location->letter, letter_location->is_word);
-  }
-  printf("\n");
-  */
 
-  tree_t *temp = (dictionary_tree)->children;
-
-  while(temp->letter != 'B'){
-    temp = temp->next;
-  }
-  temp = temp->children;
-  while(temp->letter != 'E'){
-    temp = temp->next;
-  }
-  temp = temp->children;
-  while(temp->letter != 'H'){
-    temp = temp->next;
-  }
-  temp = temp->children;
-  while(temp->letter != 'E'){
-    temp = temp->next;
-  }
-  temp = temp->children;
-  while(temp->letter != 'S'){
-    temp = temp->next;
-  }
-  temp = temp->children;
-  while(temp){
-    printf("%c with flag %d\n", temp->letter, temp->is_word);
-    temp = temp->next;
-  }
-
-  //BEHEST is not a word
-
-  printf("length %d\n", myWords.length);
-  printf("PRINTING WORDS\n");
+  printf("PRINTING %d WORDS\n", myWords.length);
+  //prints our heap
   for(short i = 0; i < myWords.length; i++){
     printf("%s %d ", myWords.wordlist[i].word, myWords.wordlist[i].path_length);
 
@@ -825,6 +758,22 @@ WordList* getWords(char board[4][4]) {
   //freeList(&(dictionary_tree));
   return &myWords;
 }
+
+
+void  sampleWordList(WordList* myWords);   // a sample function to populate a word list
+
+// based on the board, find valid words
+//
+// board: 4x4 board, each element is a letter, 'Q' represents "QU",
+//    first dimension is row, second dimension is column
+//    ie, board[row][col]
+//
+// Return at most 20 valid words in UPPERCASE and
+//    their paths of locations on the board in myWords
+//
+// See word.h for details of the struct for Word, WordList, Location, and access functions
+
+
 
 
 
