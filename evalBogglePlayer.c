@@ -58,6 +58,7 @@ float getAccuTimeOfBogglePlayer(char *word,
 void  reportPerformance(float accuracySum, clock_t totalCpuTimeUsed,
             int totalNumWords, int totalNumGuesses);
 long  getPeakMemory();
+double getElapsedTime(struct timespec start, struct timespec end);
 
 char* dictionary[234941];
 char boggle_dices[16][7] = {"AAEEGN", "ABBJOO", "ACHOPS", "AFFKPS", "AOOTTW", "CIMOTU", "DEILRX", "DELRVY",
@@ -116,32 +117,23 @@ int main (int argc, char* argv[]) {
         }
     }
 
+    struct timespec start, end;
+
     // Calculate the time taken to find the words on the board
-    clock_t startTime = clock();
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
     // Play the game of Boggle and find the words
     WordList* guessedWords = getWords(boardCopy);
-    clock_t endTime = clock();
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 
-        // Calculate the used memory
+    // Calculate the used memory
     long memory = getPeakMemory();
-
-    clock_t elapsedTime = endTime - startTime;
-
-    if (elapsedTime == 0) // too small to measure, unlikely
-       elapsedTime = 1;
-    else if (elapsedTime < 0)
-      {
-        printf("**negative elapsed time: %ld clock ticks, the clock has wrapped around, performance cannot be calculated**\n", elapsedTime);
-        exit(-1);
-      }
     if (memory <= 0) // too small to measure, highly unlikely
        memory = 1;
 
-    // Convert elapsed time into seconds, and calculate the average time
-    double elapsedTimeSec = ((double)elapsedTime) / CLOCKS_PER_SEC;
+    double elapsedTimeSec = getElapsedTime(start, end);  
     if (elapsedTimeSec > 180) {  // longer than 3 minutes
-        printf("*** getWords() exceeded 3 minutes ***\n");
-        exit(-1);
+      printf("*** getWords() exceeded 3 minutes ***\n");
+      exit(-1);
     }
 
     // Calculate points for the words found
@@ -155,29 +147,53 @@ int main (int argc, char* argv[]) {
                (total_points * total_points) / sqrt(elapsedTimeSec * memory));
 }
 
+// calculate elapsed time in seconds between start and end
+double getElapsedTime(struct timespec start, struct timespec end)
+{
+  double elapsedTimeSec = (end.tv_sec + (((double)end.tv_nsec) / 1e9)) -
+                          (start.tv_sec + (((double)start.tv_nsec) / 1e9));
+
+  if (elapsedTimeSec == 0)  // too small to measure, unlikely
+    {
+      struct timespec resolution;
+      clock_getres(CLOCK_PROCESS_CPUTIME_ID, &resolution);
+      elapsedTimeSec = ((double)resolution.tv_nsec) / 1e9;  // smallest value (time resolution)
+      printf("**zero elapsed time, using the smallest value %.4e **\n", elapsedTimeSec);
+    }
+  else if (elapsedTimeSec < 0)
+    {
+      printf("**negative elapsed time: %.4e, the clock has wrapped around, performance cannot be calculated**\n", elapsedTimeSec);
+      exit(-1);
+    }
+
+  return elapsedTimeSec;
+}
+
 // call initBogglePlayer in bogglePlayer
 // report time and memory for preprocessing
 void preprocessingInBogglePlayer(char* wordFile) {
-        printf("Preprocessing in bogglePlayer...\n");
+  printf("Preprocessing in bogglePlayer...\n");
 
-        clock_t startTime, endTime;
-        startTime = clock();
-        initBogglePlayer(wordFile);
-        endTime = clock();
+  struct timespec start, end;
+  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &start);
+  initBogglePlayer(wordFile);
+  clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &end);
 
-        double initTime = (double) (endTime - startTime);
-        if (initTime <= 0) // too small to measure, unlikely
-	  initTime = 1.0;
-	initTime = initTime / CLOCKS_PER_SEC; // convert to seconds
+  // Calculate the used memory
+  long memory = getPeakMemory();
+  if (memory <= 0) // too small to measure, highly unlikely
+    memory = 1;
 
-        printf("cpu time in seconds (not part of score): %.4e\n", initTime);
-        printf("memory in bytes (not part of score): %ld\n",
-                getPeakMemory());
-	if (initTime > 600)
-	  {
-	    printf("**** Preprocessing time is too long ****\n");
-	    exit(-1);
-	  }
+  double initTime = getElapsedTime(start, end);
+
+  printf("cpu time in seconds (not part of score): %.4e\n", initTime);
+  printf("memory in bytes (not part of score): %ld\n",
+	 getPeakMemory());
+  if (initTime > 600)
+    {
+      printf("**** Preprocessing time is too long ****\n");
+      exit(-1);
+    }
 }
 
 // Calculates the points for the words found on the board
@@ -353,7 +369,10 @@ long getPeakMemory() {
         //"the maximum resident set size utilized (in kilobytes)"
         return (long)usage.ru_maxrss * 1024;
     else
+      {
+        fprintf(stderr, "getrusage() error\n");
         return -1;
+      }
 }
 #endif
 
